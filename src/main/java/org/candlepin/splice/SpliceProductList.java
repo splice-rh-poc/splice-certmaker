@@ -53,5 +53,9 @@ public class SpliceProductList {
 	public int size() {
 		return productList.size();
 	}
+	
+	public List<Product> getProductList() {
+		return productList;
+	}
 
 }

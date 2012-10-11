@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.util.List;
 
+import org.candlepin.model.Product;
 import org.junit.Test;
 
 public class SpliceProductListTest {
@@ -27,5 +29,15 @@ public class SpliceProductListTest {
 		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
 		assertEquals(3, spl.size());
 	}
+	
+	@Test
+	public void testGetProductList() throws IOException {
+		SpliceProductList spl = new SpliceProductList();
+		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
+		List<Product> list = spl.getProductList();
+		//TODO: make sure the product is really there
+		assertEquals(3, list.size());
+	}
+
 
 }

@@ -45,6 +45,8 @@ import org.candlepin.pki.impl.DefaultSubjectKeyIdentifierWriter;
 import org.candlepin.util.CertificateSizeException;
 import org.candlepin.util.X509ExtensionUtil;
 import org.candlepin.util.X509Util;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 
 import com.google.common.collect.Collections2;
 
@@ -59,7 +61,9 @@ public class Main {
 	
 	static X509ExtensionUtil extensionUtil;
 	
-	 private static Logger log = Logger.getLogger(Main.class);
+	private static Logger log = Logger.getLogger(Main.class);
+	
+	private static SpliceProductList spliceProductList;
 	 
     private Main() {
         // silence checkstyle
@@ -73,6 +77,26 @@ public class Main {
     	// read config
     	
     	Config config = new Config("candlepin.conf");
+    	
+    	spliceProductList = new SpliceProductList();
+    	
+    	try {
+			spliceProductList.loadProducts(args[0]);
+		} catch (JsonParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			System.exit(-1);
+		} catch (JsonMappingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			System.exit(-1);
+
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			System.exit(-1);
+
+		}
     	
     	
     	try {
@@ -122,6 +146,7 @@ public class Main {
     	sub.setProduct(phonyProduct);
     	
     	Set<Product> products = new HashSet<Product>();
+    	products.addAll(spliceProductList.getProductList());
     	Map<String, EnvironmentContent> promotedContent = new HashMap<String, EnvironmentContent>();
 
     	// build up extensions
