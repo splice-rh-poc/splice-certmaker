@@ -8,6 +8,8 @@ import static org.junit.Assert.fail;
 import java.io.EOFException;
 import java.io.IOException;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.junit.Test;
 
 public class SpliceProductListTest {
@@ -25,35 +27,65 @@ public class SpliceProductListTest {
 	}
 	
 	@Test
+	public void testNoProductsLoaded() throws IOException {
+		SpliceProductList spl = new SpliceProductList();
+		assertEquals(0, spl.getAllProducts().size());
+	}
+	
+	@Test
 	public void testProductLoad() throws IOException {
 		SpliceProductList spl = new SpliceProductList();
 		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
-		assertEquals(3, spl.size());
+		assertEquals(3, spl.getAllProducts().size());
 	}
 	
 	@Test
 	public void testGetProductList() throws IOException {
 		SpliceProductList spl = new SpliceProductList();
 		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
-		//TODO: make sure the product is really there
-		assertNotNull(spl.getProduct("69"));
+		
+		String[] shouldExist = {"69"};
+		assertEquals(1, spl.getProducts(shouldExist).size());
 	}
 	
 	@Test
 	public void testNoProductFound() throws IOException {
 		SpliceProductList spl = new SpliceProductList();
 		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
-		assertNull(spl.getProduct("123456"));
+		
+		String[] shouldNotExist = {"123456"};
+		assertEquals(0, spl.getProducts(shouldNotExist).size());
 	}
 	
 	@Test
-	public void testReloadProductList() {
-		fail("impl me");
+	public void testReloadProductList() throws IOException {
+		SpliceProductList spl = new SpliceProductList();
+		// first load
+		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
+		assertEquals(3, spl.getAllProducts().size());
+		// second load
+		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
+		assertEquals(3, spl.getAllProducts().size());
 	}
+	
+	@Test(expected = RuntimeException.class)
+	public void testDuplicateIdInProductList() throws IOException {
+		SpliceProductList spl = new SpliceProductList();
+		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products-duplicates.json").getPath());
+	}
+	
 	@Test
-	public void testDuplicateIdInProductList() {
-		fail("impl me");
+	public void testGetTwoProducts() throws IOException {
+		SpliceProductList spl = new SpliceProductList();
+		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
+		
+		String[] twoProducts = {"69", "83"};
+		assertEquals(2, spl.getProducts(twoProducts).size());
+		
+		
+
 	}
+
 
 
 

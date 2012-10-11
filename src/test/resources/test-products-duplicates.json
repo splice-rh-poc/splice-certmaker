@@ -1,0 +1,106 @@
+[
+    {
+        "attributes": [
+            {
+                "name": "version", 
+                "value": "6.2"
+            }, 
+            {
+                "name": "sockets", 
+                "value": "2"
+            }, 
+            {
+                "name": "warning_period", 
+                "value": "30"
+            }
+        ], 
+        "id": "69", 
+        "name": "Awesome OS Server Bits", 
+        "productContent": [
+            {
+                "content": {
+                    "contentUrl": "/content/dist/rhel/rhui/server/6/$releasever/$basearch/os", 
+                    "id": 300, 
+                    "label": "rhui-rhel-server", 
+                    "metadataExpire": 0, 
+                    "name": "rhui-rhel-server", 
+                    "type": "yum", 
+                    "vendor": "test-vendor"
+                }, 
+                "enabled": true
+            }
+        ]
+    }, 
+    {
+        "attributes": [
+            {
+                "name": "version", 
+                "value": "6.1"
+            }, 
+            {
+                "name": "sockets", 
+                "value": "2"
+            }, 
+            {
+                "name": "warning_period", 
+                "value": "30"
+            }
+        ], 
+        "id": "83", 
+        "name": "Awesome OS HA Server Bits", 
+        "productContent": [
+            {
+                "content": {
+                    "contentUrl": "/content/dist/rhel/rhui/server/6/$releasever/$basearch/highavailability/os", 
+                    "id": 301, 
+                    "label": "rhui-ha-server", 
+                    "metadataExpire": 0, 
+                    "name": "rhui-ha-server", 
+                    "type": "yum", 
+                    "vendor": "test-vendor"
+                }, 
+                "enabled": true
+            }
+        ]
+    },
+    {
+        "attributes": [
+            {
+                "name": "version", 
+                "value": "6.1"
+            }, 
+            {
+                "name": "sockets", 
+                "value": "2"
+            }, 
+            {
+                "name": "warning_period", 
+                "value": "30"
+            }
+        ], 
+        "id": "85", 
+        "name": "Awesome OS LB Server Bits", 
+        "productContent": [
+            {
+                "content": {
+                    "contentUrl": "/content/dist/rhel/rhui/server/6/$releasever/$basearch/loadbalancer/os", 
+                    "id": 302, 
+                    "label": "rhui-lb-server", 
+                    "metadataExpire": 0, 
+                    "name": "rhui-lb-server", 
+                    "type": "yum", 
+                    "vendor": "test-vendor"
+                }, 
+                "enabled": true
+            }
+        ]
+    },
+    {
+        "attributes": [
+        ], 
+        "id": "85", 
+        "name": "foo foo foo", 
+        "productContent": [
+        ]
+    }
+]

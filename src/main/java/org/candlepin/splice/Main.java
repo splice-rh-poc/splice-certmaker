@@ -146,7 +146,7 @@ public class Main {
     	sub.setProduct(phonyProduct);
     	
     	Set<Product> products = new HashSet<Product>();
-    	products.addAll(spliceProductList.getProductList());
+    	products.addAll(spliceProductList.getAllProducts());
     	Map<String, EnvironmentContent> promotedContent = new HashMap<String, EnvironmentContent>();
 
     	// build up extensions
