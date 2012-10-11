@@ -1,0 +1,32 @@
+{
+    "content": [
+       {
+            "name": "rhui-rhel-server",
+            "id": 300,
+            "label": "rhui-rhel-server",
+            "type": "yum",
+            "vendor": "test-vendor",
+            "content_url": "/content/dist/rhel/rhui/server/6/$releasever/$basearch/os",
+            "metadata_expire": 0
+        },
+        {
+            "name": "rhui-ha-server",
+            "id": 301,
+            "label": "rhui-ha-server",
+            "type": "yum",
+            "vendor": "test-vendor",
+            "content_url": "/content/dist/rhel/rhui/server/6/$releasever/$basearch/highavailability/os",
+            "metadata_expire": 0
+        },
+        {
+            "name": "rhui-lb-server",
+            "id": 302,
+            "label": "rhui-lb-server",
+            "type": "yum",
+            "vendor": "test-vendor",
+            "content_url": "/content/dist/rhel/rhui/server/6/$releasever/$basearch/loadbalancer/os",
+            "metadata_expire": 0
+        }
+    ]
+}
+
