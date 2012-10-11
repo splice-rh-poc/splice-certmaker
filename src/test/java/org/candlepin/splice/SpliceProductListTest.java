@@ -1,12 +1,13 @@
 package org.candlepin.splice;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.util.List;
 
-import org.candlepin.model.Product;
 import org.junit.Test;
 
 public class SpliceProductListTest {
@@ -34,10 +35,26 @@ public class SpliceProductListTest {
 	public void testGetProductList() throws IOException {
 		SpliceProductList spl = new SpliceProductList();
 		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
-		List<Product> list = spl.getProductList();
 		//TODO: make sure the product is really there
-		assertEquals(3, list.size());
+		assertNotNull(spl.getProduct("69"));
 	}
+	
+	@Test
+	public void testNoProductFound() throws IOException {
+		SpliceProductList spl = new SpliceProductList();
+		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
+		assertNull(spl.getProduct("123456"));
+	}
+	
+	@Test
+	public void testReloadProductList() {
+		fail("impl me");
+	}
+	@Test
+	public void testDuplicateIdInProductList() {
+		fail("impl me");
+	}
+
 
 
 }

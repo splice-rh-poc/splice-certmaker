@@ -57,5 +57,15 @@ public class SpliceProductList {
 	public List<Product> getProductList() {
 		return productList;
 	}
+	
+	public Product getProduct(String id) {
+		for (Product p: productList) {
+			if (p.getId().equals(id)) {
+				return p;
+			}
+		}
+		return null;
+		
+	}
 
 }
