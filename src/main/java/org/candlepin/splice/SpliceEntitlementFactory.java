@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,42 +24,33 @@ import org.candlepin.model.Product;
 import org.candlepin.model.Subscription;
 import org.candlepin.pki.PKIUtility;
 import org.candlepin.pki.X509ExtensionWrapper;
-import org.candlepin.pki.impl.BouncyCastlePKIReader;
-import org.candlepin.pki.impl.BouncyCastlePKIUtility;
-import org.candlepin.pki.impl.DefaultSubjectKeyIdentifierWriter;
 import org.candlepin.util.CertificateSizeException;
 import org.candlepin.util.X509ExtensionUtil;
 import org.candlepin.util.X509Util;
 
 import com.google.common.collect.Collections2;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class SpliceEntitlementFactory {
 
-	static PKIUtility pkiUtility;
-	
-	static KeyPair keypair;
-	
-	static X509ExtensionUtil extensionUtil;
-	
 	private static Logger log = Logger.getLogger(SpliceEntitlementFactory.class);
 	
-	private static SpliceProductList spliceProductList;
+	PKIUtility pkiUtility;
+	static KeyPair keypair;
+	X509ExtensionUtil extensionUtil;
+	SpliceProductList spliceProductList;
 	
-	public SpliceEntitlementFactory(Config config, String productJsonFile) throws IOException {
-		// initialize one-time-use items
+	@Inject
+	public SpliceEntitlementFactory(SpliceConfig config, X509ExtensionUtil extensionUtil,
+			SpliceProductList spliceProductList, PKIUtility pkiUtility) throws IOException {
 		
-    	extensionUtil = new X509ExtensionUtil(config);
-    	spliceProductList = new SpliceProductList();
-    	
-    	spliceProductList.loadProducts(productJsonFile);
-
-    	try {
-			pkiUtility = new BouncyCastlePKIUtility(new BouncyCastlePKIReader(config), new DefaultSubjectKeyIdentifierWriter());
-		} catch (CertificateException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
-    	
+    	this.extensionUtil= extensionUtil;
+    	this.spliceProductList = spliceProductList;
+    	this.pkiUtility = pkiUtility;
+    	String productFilename = config.getString("splice.product_json");
+    	spliceProductList.loadProducts(productFilename);
 
 		log.debug("creating keypair");
 		try {
@@ -125,7 +115,6 @@ public class SpliceEntitlementFactory {
 		ent.setCertificates(certs);
 		ent.setStartDate(startDate);
 		ent.setEndDate(endDate);
-		
 		return ent;
 		
 	}
@@ -154,14 +143,14 @@ public class SpliceEntitlementFactory {
 	private Entitlement createPhonyEntitlement(Pool pool) {
 		Entitlement ent = new Entitlement();
     	ent.setPool(pool);
-    	ent.setAccountNumber("foo-account");
+    	ent.setAccountNumber(pool.getProductName());
 		return ent;
 	}
 
 	private Subscription createPhonySubscription(Date startDate, Date endDate,
 			Product phonyProduct) {
 		Subscription sub = new Subscription();
-    	sub.setId("foo-sub-id");
+    	sub.setId(phonyProduct.getName());
     	sub.setQuantity(1L);
     	sub.setStartDate(startDate);
     	sub.setEndDate(endDate);

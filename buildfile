@@ -15,6 +15,8 @@ BOUNCYCASTLE = group('bcprov-jdk16', :under=>'org.bouncycastle', :version=>'1.46
 
 LOG4J = 'log4j:log4j:jar:1.2.14'
 
+GUICE = 'com.google.inject:guice:jar:3.0'
+
 HIBERNATE = ['org.hibernate:hibernate-core:jar:3.3.2.GA',
              'org.hibernate:hibernate-annotations:jar:3.4.0.GA',
              'org.hibernate:hibernate-commons-annotations:jar:3.3.0.ga',
@@ -23,12 +25,9 @@ HIBERNATE = ['org.hibernate:hibernate-core:jar:3.3.2.GA',
              'org.hibernate:hibernate-tools:jar:3.2.4.GA']
 
 
-#COMMONS = ['commons-codec:commons-codec:jar:1.4',
-#           'commons-collections:commons-collections:jar:3.1',
-#           'commons-io:commons-io:jar:1.3.2',
-#           'commons-logging:commons-logging:jar:1.1.1',
-#           'commons-lang:commons-lang:jar:2.5']
-COMMONS = 'commons-lang:commons-lang:jar:2.5'
+COMMONS = ['commons-codec:commons-codec:jar:1.4',
+            'commons-collections:commons-collections:jar:3.1',
+            'commons-lang:commons-lang:jar:2.5']
 
 COLLECTIONS = 'com.google.collections:google-collections:jar:1.0'
 
@@ -50,9 +49,9 @@ define "splice-certmaker" do
   project.version = VERSION_NUMBER
   project.group = GROUP
   manifest["Implementation-Vendor"] = COPYRIGHT
-  compile.with [CANDLEPIN_FULL, BOUNCYCASTLE, COMMONS, COLLECTIONS, JACKSON, LOG4J, HIBERNATE] # Add classpath dependencies
+  compile.with [CANDLEPIN_FULL, BOUNCYCASTLE, COMMONS, COLLECTIONS, JACKSON, LOG4J, HIBERNATE, GUICE] # Add classpath dependencies
   package(:jar)
 
-  test.with [JUNIT]
+  test.with [JUNIT, COMMONS]
 
 end

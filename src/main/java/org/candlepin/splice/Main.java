@@ -14,14 +14,15 @@
  */
 package org.candlepin.splice;
 
-import java.io.IOException;
 import java.util.Date;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
-import org.candlepin.config.Config;
 import org.candlepin.model.Entitlement;
 import org.candlepin.model.EntitlementCertificate;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 /**
  * Main
@@ -43,13 +44,10 @@ public class Main {
      */
     public static void main(String[] args) {
     	
-    	Config config = new Config("candlepin.conf");
-    	try {
-			spliceEntitlementFactory = new SpliceEntitlementFactory(config, args[0]);
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
+    	
+    	Injector injector = Guice.createInjector(new CertgenModule());
+
+    	spliceEntitlementFactory = injector.getInstance(SpliceEntitlementFactory.class);
     	
     	String[] productIds = {"69"};
     	Entitlement ent = spliceEntitlementFactory.createEntitlement(new Date(), DateUtils.addHours(new Date(), 1), productIds, "foo-rhic-id");
@@ -58,7 +56,6 @@ public class Main {
 			System.out.println(c.getCert());
 			System.out.println(c.getKey());
 		}
-		
         
     }
 

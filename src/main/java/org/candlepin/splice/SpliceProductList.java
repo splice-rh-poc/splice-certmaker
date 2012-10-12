@@ -24,7 +24,6 @@ public class SpliceProductList {
 	private List<Product> productList;
 	
 	public SpliceProductList() {
-		//productList = new ArrayList<Product>();
 		mapper = new ObjectMapper();
 		productList = new ArrayList<Product>();
 	}
