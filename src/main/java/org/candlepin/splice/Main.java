@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Red Hat, Inc.
+ * Copyright (c) 2012 Red Hat, Inc.
  *
  * This software is licensed to you under the GNU General Public License,
  * version 2 (GPLv2). There is NO WARRANTY for this software, express or
@@ -14,15 +14,16 @@
  */
 package org.candlepin.splice;
 
-import java.util.Date;
-
-import org.apache.commons.lang.time.DateUtils;
-import org.apache.log4j.Logger;
 import org.candlepin.model.Entitlement;
 import org.candlepin.model.EntitlementCertificate;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+
+import org.apache.commons.lang.time.DateUtils;
+import org.apache.log4j.Logger;
+
+import java.util.Date;
 
 /**
  * Main
