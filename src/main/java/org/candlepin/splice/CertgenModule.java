@@ -23,6 +23,8 @@ import org.candlepin.pki.impl.DefaultSubjectKeyIdentifierWriter;
 
 import com.google.inject.AbstractModule;
 
+import org.codehaus.jackson.map.ObjectMapper;
+
 public class CertgenModule extends AbstractModule {
 
 	@Override
@@ -31,6 +33,7 @@ public class CertgenModule extends AbstractModule {
         bind(PKIUtility.class).to(BouncyCastlePKIUtility.class).asEagerSingleton();
         bind(PKIReader.class).to(BouncyCastlePKIReader.class).asEagerSingleton();
         bind(SubjectKeyIdentifierWriter.class).to(DefaultSubjectKeyIdentifierWriter.class);
+        bind(ObjectMapper.class).to(SpliceObjectMapper.class).asEagerSingleton();
 	}
 	
 

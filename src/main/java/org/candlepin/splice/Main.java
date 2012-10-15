@@ -14,27 +14,22 @@
  */
 package org.candlepin.splice;
 
-import org.candlepin.model.Entitlement;
-import org.candlepin.model.EntitlementCertificate;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
-
-import java.util.Date;
+import org.mortbay.jetty.Server;
 
 /**
  * Main
  */
 public class Main {
 	
-	
 	private static Logger log = Logger.getLogger(Main.class);
 	
-	private static SpliceEntitlementFactory spliceEntitlementFactory;
+	static Injector injector;
 	
+	static Server server;
 	 
     private Main() {
         // silence checkstyle
@@ -42,21 +37,16 @@ public class Main {
 
     /**
      * @param args
+     * @throws Exception 
      */
-    public static void main(String[] args) {
-    	
-    	
-    	Injector injector = Guice.createInjector(new CertgenModule());
+    public static void main(String[] args) throws Exception {
+        injector = Guice.createInjector(new CertgenModule());
 
-    	spliceEntitlementFactory = injector.getInstance(SpliceEntitlementFactory.class);
-    	
-    	String[] productIds = {"69"};
-    	Entitlement ent = spliceEntitlementFactory.createEntitlement(new Date(), DateUtils.addHours(new Date(), 1), productIds, "foo-rhic-id");
-    	
-		for (EntitlementCertificate c: ent.getCertificates()) {
-			System.out.println(c.getCert());
-			System.out.println(c.getKey());
-		}
+        log.info("starting server on port 8080");
+    	server = new Server(8080);
+    	server.setHandler(injector.getInstance(CertgenHandler.class));
+    	server.start();
+    	log.info("server started!");
         
     }
 

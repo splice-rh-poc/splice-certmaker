@@ -39,6 +39,8 @@ import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -93,6 +95,7 @@ public class SpliceEntitlementFactory {
     	
     	Map<String, EnvironmentContent> promotedContent = new HashMap<String, EnvironmentContent>();
 
+    	log.debug("generating certificate for products: " + Arrays.toString(productIds));
     	Set<X509ExtensionWrapper> extensions = createX509Extensions(productIds,
 				consumer, ent, sub, promotedContent);
     	
@@ -104,14 +107,15 @@ public class SpliceEntitlementFactory {
 		} catch (GeneralSecurityException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
         
 		EntitlementCertificate ec = new EntitlementCertificate();
 		try {
 			ec.setCertAsBytes(pkiUtility.getPemEncoded(x509Cert));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		
 
@@ -138,10 +142,25 @@ public class SpliceEntitlementFactory {
 			Map<String, EnvironmentContent> promotedContent)
 			throws RuntimeException {
 		Set<Product> products = spliceProductList.getProducts(productIds);
-    	// build up extensions
+		
+		// build up a list of found product IDs
+		ArrayList<String> foundProductIds = new ArrayList<String>();
+		for (Product p: products) {
+		    foundProductIds.add(p.getId());
+		}
+
+		// if productIds is a superset of foundProductIds, warn the user
+		for (String pid : productIds) {
+		    if (!foundProductIds.contains(pid)) {
+		        log.warn("product ID " + pid + " not found, not adding to entitlement certificate");
+		    }
+		}
+
+		// build up extensions
         Set<X509ExtensionWrapper> extensions = new LinkedHashSet<X509ExtensionWrapper>();
         for (Product prod : Collections2
             .filter(products, X509Util.PROD_FILTER_PREDICATE)) {
+            log.debug("adding [" + prod.getId() + "] " + prod.getName() + " to entitlement certificate");
             extensions.addAll(extensionUtil.productExtensions(prod));
             try {
                 extensions.addAll(extensionUtil.contentExtensions(prod.getProductContent(), null, promotedContent, consumer));
@@ -178,6 +197,7 @@ public class SpliceEntitlementFactory {
     	pool.setProductName(phonyProduct.getName());
     	pool.setStartDate(startDate);
     	pool.setEndDate(endDate);
+    	pool.setQuantity(1L);
 		return pool;
 	}
 	 

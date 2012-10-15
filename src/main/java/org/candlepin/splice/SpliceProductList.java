@@ -26,19 +26,23 @@ import org.candlepin.model.Content;
 import org.candlepin.model.Product;
 import org.candlepin.model.ProductAttribute;
 import org.candlepin.model.ProductContent;
+
+import com.google.inject.Inject;
+
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
 public class SpliceProductList {
-	private static ObjectMapper mapper;
+	private ObjectMapper mapper;
 	
 	private static Logger log = Logger.getLogger(SpliceProductList.class);
 	private List<Product> productList;
 	
-	public SpliceProductList() {
-		mapper = new ObjectMapper();
+	@Inject
+	public SpliceProductList(ObjectMapper mapper) {
+	    this.mapper = mapper;
 		productList = new ArrayList<Product>();
 	}
 	
