@@ -52,11 +52,11 @@ public class CertgenHandler extends AbstractHandler {
     public void handle(String target, HttpServletRequest request,
             HttpServletResponse response, int dispatch)
         throws IOException, ServletException {
-        // TODO Auto-generated method stub
-        response.setContentType("text/html");
-
+        response.setContentType("application/json");
         try {
-            Entitlement ent = spliceEntitlementFactory.createEntitlement(new Date(), DateUtils.addHours(new Date(), 1), request.getParameterValues("product"), "foo-rhic-id");
+            Entitlement ent = spliceEntitlementFactory.createEntitlement(new Date(),
+                    DateUtils.addHours(new Date(), 1), request.getParameterValues("product"),
+                    "foo-rhic-id");
             response.getWriter().println(mapper.writeValueAsString(ent));
             response.setStatus(HttpServletResponse.SC_OK);
         }

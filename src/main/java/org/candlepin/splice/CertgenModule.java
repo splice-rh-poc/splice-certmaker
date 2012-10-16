@@ -32,7 +32,7 @@ public class CertgenModule extends AbstractModule {
 		// most of this was copied from candlepin's injector module
         bind(PKIUtility.class).to(BouncyCastlePKIUtility.class).asEagerSingleton();
         bind(PKIReader.class).to(BouncyCastlePKIReader.class).asEagerSingleton();
-        bind(SubjectKeyIdentifierWriter.class).to(DefaultSubjectKeyIdentifierWriter.class);
+        bind(SubjectKeyIdentifierWriter.class).to(DefaultSubjectKeyIdentifierWriter.class).asEagerSingleton();
         bind(ObjectMapper.class).to(SpliceObjectMapper.class).asEagerSingleton();
 	}
 	

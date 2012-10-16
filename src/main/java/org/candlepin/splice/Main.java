@@ -14,11 +14,15 @@
  */
 package org.candlepin.splice;
 
+import org.candlepin.config.Config;
+
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import org.apache.log4j.Logger;
+import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
+import org.mortbay.jetty.nio.SelectChannelConnector;
 
 /**
  * Main
@@ -30,6 +34,8 @@ public class Main {
 	static Injector injector;
 	
 	static Server server;
+	
+	static Config config;
 	 
     private Main() {
         // silence checkstyle
@@ -41,9 +47,19 @@ public class Main {
      */
     public static void main(String[] args) throws Exception {
         injector = Guice.createInjector(new CertgenModule());
+        
+        config = injector.getInstance(SpliceConfig.class);
+        
+        int listenPort = config.getInt("splice.certgen_listen_port", 8080);
 
-        log.info("starting server on port 8080");
-    	server = new Server(8080);
+        log.info("starting server on port " + listenPort);
+    	server = new Server();
+    	// use NIO connector. I didn't benchmark this, I am just going off the docs here
+    	Connector conn = injector.getInstance(SelectChannelConnector.class);
+    	conn.setPort(listenPort);
+    	conn.setServer(server);
+    	server.addConnector(conn);
+    	server.setThreadPool(injector.getInstance(SpliceQueuedThreadPool.class));
     	server.setHandler(injector.getInstance(CertgenHandler.class));
     	server.start();
     	log.info("server started!");

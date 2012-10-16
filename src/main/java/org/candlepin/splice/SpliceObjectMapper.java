@@ -32,7 +32,10 @@ public class SpliceObjectMapper extends ObjectMapper {
         // set a filter so we can serialize Entitlement objects
         SimpleFilterProvider filterProvider = new SimpleFilterProvider();
         filterProvider.setDefaultFilter(new ExportBeanPropertyFilter());
-        this.setFilters(filterProvider);    }
+        this.setFilters(filterProvider);
+        this.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
+
+    }
 
     public SpliceObjectMapper(JsonFactory jf) {
         super(jf);
