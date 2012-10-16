@@ -12,7 +12,7 @@ Name: splice-certmaker
 Summary: splice-certmaker summary
 Group: Internet/Applications
 License: GPLv2
-Version: 0.0.2
+Version: 0.0.3
 Release: 1%{?dist}
 URL: https://github.com/splice/splice-certgen
 Source: %{name}-%{version}.tar.gz
@@ -176,6 +176,9 @@ fi
 
 
 %changelog
+* Tue Oct 16 2012 Chris Duryee (beav) <cduryee@redhat.com>
+- first cut at building (cduryee@redhat.com)
+
 * Tue Oct 16 2012 Chris Duryee (beav) <cduryee@redhat.com>
 - new package built with tito
 
