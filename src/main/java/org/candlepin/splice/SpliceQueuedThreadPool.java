@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012 Red Hat, Inc.
+ * Copyright (c) 2009 - 2012 Red Hat, Inc.
  *
  * This software is licensed to you under the GNU General Public License,
  * version 2 (GPLv2). There is NO WARRANTY for this software, express or
@@ -14,15 +14,26 @@
  */
 package org.candlepin.splice;
 
-import org.candlepin.config.Config;
+import org.mortbay.thread.QueuedThreadPool;
 
-public class SpliceConfig extends Config {
-	
-	final static String CERTGEN_CONF_FILE = "/etc/splice-certmaker.conf";
 
-	public SpliceConfig() {
-		super(CERTGEN_CONF_FILE);
-	}
+public class SpliceQueuedThreadPool extends QueuedThreadPool {
 
+    /**
+     * Comment for <code>serialVersionUID</code>
+     */
+    private static final long serialVersionUID = -7561685094165165475L;
+
+    public SpliceQueuedThreadPool() {
+            super();
+            
+            // TODO: read this from a conf file, and log what we did!
+            this.setMinThreads(5);
+            this.setMaxThreads(100);
+    }
+
+    public SpliceQueuedThreadPool(int maxThreads) {
+        super(maxThreads);
+    }
 
 }

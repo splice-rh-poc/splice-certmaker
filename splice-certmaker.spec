@@ -29,6 +29,8 @@ BuildRequires: log4j >= 1.2
 BuildRequires: jakarta-commons-codec
 BuildRequires: java-devel >= 1.6.0
 
+#jetty-util
+
 %define __jar_repack %{nil}
 
 %description

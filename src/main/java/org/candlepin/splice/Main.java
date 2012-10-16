@@ -50,7 +50,7 @@ public class Main {
         
         config = injector.getInstance(SpliceConfig.class);
         
-        int listenPort = config.getInt("splice.certgen_listen_port", 8080);
+        int listenPort = config.getInt("splice.certmaker_listen_port", 8080);
 
         log.info("starting server on port " + listenPort);
     	server = new Server();

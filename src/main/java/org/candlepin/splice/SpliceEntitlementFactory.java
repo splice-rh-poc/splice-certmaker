@@ -101,14 +101,18 @@ public class SpliceEntitlementFactory {
     	
         X509Certificate x509Cert = null;
 		try {
-			x509Cert = pkiUtility.createX509Certificate(
-			        "cn=testtesttest", extensions, null, startDate,
-			        endDate, keypair, serial.getSerial(), null);
-		} catch (GeneralSecurityException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
+            x509Cert = pkiUtility.createX509Certificate(
+                    "cn=testtesttest", extensions, null, startDate,
+                    endDate, keypair, serial.getSerial(), null);
+        }
+        catch (GeneralSecurityException e1) {
+            e1.printStackTrace();
+            throw new RuntimeException(e1);
+        }
+        catch (IOException e1) {
+            e1.printStackTrace();
+            throw new RuntimeException(e1);
+        }
         
 		EntitlementCertificate ec = new EntitlementCertificate();
 		try {
