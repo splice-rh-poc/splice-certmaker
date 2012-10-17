@@ -45,7 +45,20 @@ public class Main {
      * @param args
      * @throws Exception 
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
+
+        // wrap the server start so we can print a full stacktrace if needed
+        try {
+            startServer();
+        }
+        catch (Exception e) {
+            log.error("unhandled error from server");
+            e.printStackTrace();
+        }
+        
+    }
+
+    private static void startServer() throws Exception {
         injector = Guice.createInjector(new CertgenModule());
         
         config = injector.getInstance(SpliceConfig.class);
@@ -63,7 +76,6 @@ public class Main {
     	server.setHandler(injector.getInstance(CertgenHandler.class));
     	server.start();
     	log.info("server started!");
-        
     }
 
 }
