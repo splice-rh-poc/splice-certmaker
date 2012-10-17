@@ -21,9 +21,20 @@ Vendor: Red Hat, Inc.
 BuildArch: noarch
 
 Requires(pre): shadow-utils
-Requires: log4j >= 1.2
+# please keep this sorted
+Requires: cglib
+Requires: codehaus-jackson-core-lgpl
+Requires: codehaus-jackson-mapper
+Requires: google-collections
+Requires: google-guice
+Requires: jakarta-commons-codec >= 1.4
 Requires: java >= 1.6.0
+Requires: jetty-eclipse
+Requires: log4j >= 1.2
+Requires: quartz
 
+
+# TODO: this is missing a lot of deps
 BuildRequires: ant >= 1.7.0
 BuildRequires: log4j >= 1.2
 BuildRequires: java-devel >= 1.6.0
