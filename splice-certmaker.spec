@@ -22,12 +22,16 @@ BuildArch: noarch
 
 Requires(pre): shadow-utils
 # please keep this sorted
+Requires: bouncycastle
+Requires: candlepin-full
 Requires: cglib
 Requires: codehaus-jackson-core-lgpl
 Requires: codehaus-jackson-mapper-lgpl
 Requires: google-collections
 Requires: google-guice
 Requires: jakarta-commons-codec >= 1.4
+Requires: jakarta-commons-collections
+Requires: jakarta-commons-lang
 Requires: java >= 1.6.0
 Requires: jetty-eclipse
 Requires: log4j >= 1.2

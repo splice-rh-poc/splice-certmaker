@@ -18,7 +18,7 @@ import org.candlepin.config.Config;
 
 public class SpliceConfig extends Config {
 	
-	final static String CERTGEN_CONF_FILE = "/etc/splice-certmaker.conf";
+	final static String CERTGEN_CONF_FILE = "/etc/splice-certmaker/splice-certmaker.conf";
 
 	public SpliceConfig() {
 		super(CERTGEN_CONF_FILE);
