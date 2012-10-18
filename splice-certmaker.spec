@@ -24,7 +24,7 @@ Requires(pre): shadow-utils
 # please keep this sorted
 Requires: cglib
 Requires: codehaus-jackson-core-lgpl
-Requires: codehaus-jackson-mapper
+Requires: codehaus-jackson-mapper-lgpl
 Requires: google-collections
 Requires: google-guice
 Requires: jakarta-commons-codec >= 1.4
