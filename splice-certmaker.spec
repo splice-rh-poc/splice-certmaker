@@ -12,7 +12,7 @@ Name: splice-certmaker
 Summary: splice-certmaker summary
 Group: Internet/Applications
 License: GPLv2
-Version: 0.0.3
+Version: 0.0.4
 Release: 1%{?dist}
 URL: https://github.com/splice/splice-certgen
 Source: %{name}-%{version}.tar.gz
@@ -190,6 +190,13 @@ fi
 
 
 %changelog
+* Thu Oct 18 2012 Chris Duryee (beav) <cduryee@redhat.com>
+- deps (cduryee@redhat.com)
+- fix mapper rpm name (cduryee@redhat.com)
+- startup scripts\! (cduryee@redhat.com)
+- dep updates (cduryee@redhat.com)
+- comment out selinux, improve logging (cduryee@redhat.com)
+
 * Tue Oct 16 2012 Chris Duryee (beav) <cduryee@redhat.com>
 - first cut at building (cduryee@redhat.com)
 
