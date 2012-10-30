@@ -34,15 +34,9 @@ public class SpliceProductListTest {
     
     @Before
     public void init() {
-        this.mapper = new ObjectMapper();  
+        this.mapper = new ObjectMapper();
     }
-    
-	@Test(expected = IOException.class)
-	public void testBadFilenameLoad() throws IOException {
-		SpliceProductList spl = new SpliceProductList(mapper);
-		spl.loadProducts("fake-filename.json");
-	}
-	
+    	
 	@Test(expected = EOFException.class)
 	public void testEmptyFileLoad() throws IOException {
 		SpliceProductList spl = new SpliceProductList(mapper);
@@ -99,17 +93,13 @@ public class SpliceProductListTest {
 	
 	@Test
 	public void testGetTwoProducts() throws IOException {
-		SpliceProductList spl = new SpliceProductList(mapper);
+	    SpliceProductList spl = new SpliceProductList(mapper);
+
 		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
 		
 		String[] twoProducts = {"69", "83"};
 		assertEquals(2, spl.getProducts(twoProducts).size());
-		
-		
 
 	}
-
-
-
 
 }

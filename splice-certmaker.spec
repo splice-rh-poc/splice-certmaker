@@ -23,7 +23,7 @@ BuildArch: noarch
 Requires(pre): shadow-utils
 # please keep this sorted
 Requires: bouncycastle
-Requires: candlepin-full
+Requires: candlepin-certgen-lib
 Requires: cglib
 Requires: codehaus-jackson-core-lgpl
 Requires: codehaus-jackson-mapper-lgpl

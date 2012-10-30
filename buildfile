@@ -7,9 +7,7 @@ VERSION_NUMBER = "1.0.0"
 GROUP = "splice-certmaker"
 COPYRIGHT = ""
 
-CANDLEPIN = 'candlepin:candlepin-cert:jar:0.7.12'
-# this needs to go away!
-CANDLEPIN_FULL = 'candlepin:candlepin-full:jar:0.7.12'
+CANDLEPIN = 'candlepin:candlepin-certgen:jar:0.7.16'
 
 BOUNCYCASTLE = group('bcprov-jdk16', :under=>'org.bouncycastle', :version=>'1.46')
 
@@ -56,7 +54,7 @@ define "splice-certmaker" do
   project.version = VERSION_NUMBER
   project.group = GROUP
   manifest["Implementation-Vendor"] = COPYRIGHT
-  compile.with [CANDLEPIN_FULL, BOUNCYCASTLE, COMMONS, COLLECTIONS, JACKSON, LOG4J, HIBERNATE, GUICE, JETTY, SLF4J] # Add classpath dependencies
+  compile.with [CANDLEPIN, BOUNCYCASTLE, COMMONS, COLLECTIONS, JACKSON, LOG4J, HIBERNATE, GUICE, JETTY, SLF4J] # Add classpath dependencies
   package(:jar)
 
   test.with [JUNIT, COMMONS]

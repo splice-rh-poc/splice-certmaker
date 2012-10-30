@@ -16,12 +16,17 @@ package org.candlepin.splice;
 
 import org.candlepin.config.Config;
 
+import org.apache.log4j.Logger;
+
 public class SpliceConfig extends Config {
-	
+    private static Logger log = Logger.getLogger(SpliceConfig.class);
+
+    
 	final static String CERTGEN_CONF_FILE = "/etc/splice-certmaker/splice-certmaker.conf";
 
 	public SpliceConfig() {
 		super(CERTGEN_CONF_FILE);
+		log.info("loaded config from " + CERTGEN_CONF_FILE);
 	}
 
 

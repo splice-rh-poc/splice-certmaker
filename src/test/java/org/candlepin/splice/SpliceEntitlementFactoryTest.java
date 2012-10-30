@@ -21,14 +21,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.candlepin.model.Product;
 import org.candlepin.model.Entitlement;
+import org.candlepin.model.Product;
 import org.candlepin.pki.PKIUtility;
 import org.candlepin.util.X509ExtensionUtil;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Appender;
-import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
@@ -44,10 +43,8 @@ import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
@@ -57,12 +54,43 @@ public class SpliceEntitlementFactoryTest {
 	@Mock private SpliceConfig spliceConfig;
 	@Mock private X509ExtensionUtil x509ExtensionUtil;
 	@Mock private SpliceProductList spliceProductList;
-	@Mock private PKIUtility pkiUtility;
+	@Mock private PKIUtility pkiUtility;   
 	
 	@Test
 	public void testRhicIdInEntitlement() {
 		// TODO: impl me
 	}
+	
+   @Test(expected = RuntimeException.class)
+    public void testNullProductFilename() throws IOException {
+
+       when(spliceConfig.getString("splice.product_json")).thenReturn(null);
+       KeyPair kp = createKeyPair();
+       try {
+           when(pkiUtility.generateNewKeyPair()).thenReturn(kp);
+       } catch (NoSuchAlgorithmException e) {
+           fail("NoSuchAlgorithmException");
+       }
+       
+       Set<Product> mockSpliceProductList = new HashSet<Product>();
+       mockSpliceProductList.add(new Product("100", "test product number 100"));
+       
+       when(spliceProductList.getProducts( new String[] {"100"} )).thenReturn(mockSpliceProductList);
+       
+       SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig, x509ExtensionUtil, spliceProductList, pkiUtility);
+       Date now = new Date();
+       Date later = DateUtils.addHours(now, 1);
+       
+       String[] productList = {"100"};
+       
+       Entitlement e = sef.createEntitlement(now, later, productList, "unit-test");
+       
+       assertEquals(now, e.getStartDate());
+       assertEquals(later, e.getEndDate());
+       assertEquals(1, e.getCertificates().size());
+       verify(spliceProductList).getProducts(productList);
+       
+   }
 	
 	@Test
 	public void testCreateEntitlement() throws IOException {

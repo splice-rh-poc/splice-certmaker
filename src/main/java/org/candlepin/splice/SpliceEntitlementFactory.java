@@ -66,6 +66,9 @@ public class SpliceEntitlementFactory {
     	this.spliceProductList = spliceProductList;
     	this.pkiUtility = pkiUtility;
     	String productFilename = config.getString("splice.product_json");
+    	if (productFilename == null) {
+    	    throw new RuntimeException("splice.product_json is not defined in config file!");
+    	}
     	spliceProductList.loadProducts(productFilename);
 
 		log.debug("creating keypair");
