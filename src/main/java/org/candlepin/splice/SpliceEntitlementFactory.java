@@ -53,6 +53,8 @@ public class SpliceEntitlementFactory {
 
 	private static Logger log = Logger.getLogger(SpliceEntitlementFactory.class);
 	
+	private static long serialNumber;
+	
 	PKIUtility pkiUtility;
 	static KeyPair keypair;
 	X509ExtensionUtil extensionUtil;
@@ -78,13 +80,19 @@ public class SpliceEntitlementFactory {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-		log.debug("keypair created");
+		serialNumber = 1L;
+		log.debug("keypair created, certificate serial counter reset to 1");
 
 	}
 	
 	public Entitlement createEntitlement(Date startDate, Date endDate, String[] productIds, String rhicId) {
+	    
+	    // rev the serial number by one
+	    CertificateSerial entitlementSerial = new CertificateSerial();
+	    entitlementSerial.setCreated(new Date());
+	    entitlementSerial.setSerial(serialNumber);
+	    serialNumber++;
 		// build up objects for the Entitlement
-    	CertificateSerial serial = new CertificateSerial(1L);
 		
 	   	Consumer consumer = new Consumer();
     	consumer.setEnvironment(null);
@@ -106,7 +114,7 @@ public class SpliceEntitlementFactory {
 		try {
             x509Cert = pkiUtility.createX509Certificate(
                     "cn=testtesttest", extensions, null, startDate,
-                    endDate, keypair, serial.getSerial(), null);
+                    endDate, keypair, entitlementSerial.getSerial(), null);
         }
         catch (GeneralSecurityException e1) {
             e1.printStackTrace();
@@ -124,9 +132,8 @@ public class SpliceEntitlementFactory {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-		
 
-		ec.setSerial(serial);
+		ec.setSerial(entitlementSerial);
 		
 		try {
 			ec.setKeyAsBytes(pkiUtility.getPemEncoded(keypair.getPrivate()));
@@ -140,6 +147,7 @@ public class SpliceEntitlementFactory {
 		ent.setCertificates(certs);
 		ent.setStartDate(startDate);
 		ent.setEndDate(endDate);
+		ent.setCreated(new Date());
 		return ent;
 		
 	}
