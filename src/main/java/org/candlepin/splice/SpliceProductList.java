@@ -96,6 +96,9 @@ public class SpliceProductList {
 		// to match. Thus, we need to loop here.
 		
 		Set<Product> foundProducts = new HashSet<Product>();
+		if (ids == null) {
+		    return foundProducts;
+		}
 		for (String id: ids) {
 			for (Product p: productList) {
 				if (p.getId().equals(id)) {

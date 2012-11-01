@@ -18,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,6 +58,7 @@ public class SpliceEntitlementFactoryTest {
 	@Mock private X509ExtensionUtil x509ExtensionUtil;
 	@Mock private SpliceProductList spliceProductList;
 	@Mock private PKIUtility pkiUtility;   
+	@Mock private RhicKeypairFactory rhicKeypairFactory;
 	
 	@Test
 	public void testRhicIdInEntitlement() {
@@ -67,18 +69,16 @@ public class SpliceEntitlementFactoryTest {
 	public void testUniqueCertSerial() throws IOException {
         when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
         KeyPair kp = createKeyPair();
-        try {
-            when(pkiUtility.generateNewKeyPair()).thenReturn(kp);
-        } catch (NoSuchAlgorithmException e) {
-            fail("NoSuchAlgorithmException");
-        }
-    
+
+        when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
+
+
         Set<Product> mockSpliceProductList = new HashSet<Product>();
         mockSpliceProductList.add(new Product("100", "test product number 100"));
         
         when(spliceProductList.getProducts( new String[] {"100"} )).thenReturn(mockSpliceProductList);
         
-        SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig, x509ExtensionUtil, spliceProductList, pkiUtility);
+        SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig, x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
         Date now = new Date();
         Date later = DateUtils.addHours(now, 1);
         
@@ -101,18 +101,15 @@ public class SpliceEntitlementFactoryTest {
 
        when(spliceConfig.getString("splice.product_json")).thenReturn(null);
        KeyPair kp = createKeyPair();
-       try {
-           when(pkiUtility.generateNewKeyPair()).thenReturn(kp);
-       } catch (NoSuchAlgorithmException e) {
-           fail("NoSuchAlgorithmException");
-       }
+       when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
+
        
        Set<Product> mockSpliceProductList = new HashSet<Product>();
        mockSpliceProductList.add(new Product("100", "test product number 100"));
        
        when(spliceProductList.getProducts( new String[] {"100"} )).thenReturn(mockSpliceProductList);
        
-       SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig, x509ExtensionUtil, spliceProductList, pkiUtility);
+       SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig, x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
        Date now = new Date();
        Date later = DateUtils.addHours(now, 1);
        
@@ -132,18 +129,15 @@ public class SpliceEntitlementFactoryTest {
 
 			when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
 			KeyPair kp = createKeyPair();
-			try {
-				when(pkiUtility.generateNewKeyPair()).thenReturn(kp);
-			} catch (NoSuchAlgorithmException e) {
-				fail("NoSuchAlgorithmException");
-			}
+	        when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
+
 		
             Set<Product> mockSpliceProductList = new HashSet<Product>();
             mockSpliceProductList.add(new Product("100", "test product number 100"));
             
             when(spliceProductList.getProducts( new String[] {"100"} )).thenReturn(mockSpliceProductList);
             
-			SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig, x509ExtensionUtil, spliceProductList, pkiUtility);
+			SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig, x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
 			Date now = new Date();
 			Date later = DateUtils.addHours(now, 1);
 			
@@ -158,6 +152,28 @@ public class SpliceEntitlementFactoryTest {
 			
 	}
 	
+	@Test(expected = RuntimeException.class)
+	public void testCreateEntitlementNoProducts() throws IOException {
+
+	    when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
+	    KeyPair kp = createKeyPair();
+        when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
+
+
+	    Set<Product> mockSpliceProductList = new HashSet<Product>();
+	    mockSpliceProductList.add(new Product("100", "test product number 100"));
+
+	    when(spliceProductList.getProducts( new String[] {"100"} )).thenReturn(mockSpliceProductList);
+
+	    SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig, x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
+	    Date now = new Date();
+	    Date later = DateUtils.addHours(now, 1);
+
+	    String[] productList = {"100"};
+
+	    Entitlement e = sef.createEntitlement(now, later, null, "unit-test");
+	}
+	
     @Test
     public void testLogOnMissingProduct() throws IOException {
 
@@ -170,14 +186,10 @@ public class SpliceEntitlementFactoryTest {
         
         when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
         KeyPair kp = createKeyPair();
-        try {
-            when(pkiUtility.generateNewKeyPair()).thenReturn(kp);
-        } catch (NoSuchAlgorithmException e) {
-            fail("NoSuchAlgorithmException");
-        }
-	        
+        when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
 
-        SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig, x509ExtensionUtil, spliceProductList, pkiUtility);
+
+        SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig, x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
         Date now = new Date();
         Date later = DateUtils.addHours(now, 1);
         

@@ -56,37 +56,40 @@ public class SpliceEntitlementFactory {
 	private static long serialNumber;
 	
 	PKIUtility pkiUtility;
-	static KeyPair keypair;
 	X509ExtensionUtil extensionUtil;
 	SpliceProductList spliceProductList;
+	RhicKeypairFactory rhicKeypairFactory;
+	// it is ok to share this amongst keypairs, as long as it's increasing
 	
 	@Inject
 	public SpliceEntitlementFactory(SpliceConfig config, X509ExtensionUtil extensionUtil,
-			SpliceProductList spliceProductList, PKIUtility pkiUtility) throws IOException {
+			SpliceProductList spliceProductList, PKIUtility pkiUtility, RhicKeypairFactory rhicKeypairFactory) throws IOException {
 		
     	this.extensionUtil= extensionUtil;
     	this.spliceProductList = spliceProductList;
     	this.pkiUtility = pkiUtility;
+    	this.rhicKeypairFactory = rhicKeypairFactory;
+    	
     	String productFilename = config.getString("splice.product_json");
     	if (productFilename == null) {
     	    throw new RuntimeException("splice.product_json is not defined in config file!");
     	}
     	spliceProductList.loadProducts(productFilename);
 
-		log.debug("creating keypair");
-		try {
-			keypair = pkiUtility.generateNewKeyPair();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
+    	// reset serial sequence to 1 on startup
 		serialNumber = 1L;
-		log.debug("keypair created, certificate serial counter reset to 1");
 
 	}
 	
 	public Entitlement createEntitlement(Date startDate, Date endDate, String[] productIds, String rhicId) {
+
+	    if (productIds == null || productIds.length == 0) {
+	        throw new RuntimeException("no product IDs specified");
+	    }
+	    // grab a keypair for the given rhic
 	    
+	    KeyPair keypair = rhicKeypairFactory.getKeyPair(rhicId);
+
 	    // rev the serial number by one
 	    CertificateSerial entitlementSerial = new CertificateSerial();
 	    entitlementSerial.setCreated(new Date());
@@ -156,6 +159,7 @@ public class SpliceEntitlementFactory {
 			Consumer consumer, Entitlement ent, Subscription sub,
 			Map<String, EnvironmentContent> promotedContent)
 			throws RuntimeException {
+	    
 		Set<Product> products = spliceProductList.getProducts(productIds);
 		
 		// build up a list of found product IDs

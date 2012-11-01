@@ -37,6 +37,8 @@ public class CertgenModule extends AbstractModule {
         bind(SubjectKeyIdentifierWriter.class).to(DefaultSubjectKeyIdentifierWriter.class).asEagerSingleton();
         bind(ObjectMapper.class).to(SpliceObjectMapper.class).asEagerSingleton();
 	}
+
+
 	
 
 }

@@ -66,6 +66,16 @@ public class SpliceProductListTest {
 	}
 	
 	@Test
+    public void testGetProductListNull() throws IOException {
+	    // this happens if no products were sent in via the URL query params
+	    SpliceProductList spl = new SpliceProductList(mapper);
+	    spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
+
+        assertEquals(0, spl.getProducts(null).size());
+	}
+
+	
+	@Test
 	public void testNoProductFound() throws IOException {
 		SpliceProductList spl = new SpliceProductList(mapper);
 		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());

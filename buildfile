@@ -39,7 +39,8 @@ JACKSON = [group('jackson-core-lgpl',
                  :under => 'org.codehaus.jackson',
                  :version => '1.9.2')]
 
-JUNIT = ['junit:junit:jar:4.5', 'org.mockito:mockito-all:jar:1.8.5']
+# mockito 1.9.5 is required, to fix http://code.google.com/p/mockito/issues/detail?id=53
+JUNIT = ['junit:junit:jar:4.5', 'org.mockito:mockito-all:jar:1.9.5']
 
 SLF4J = [ 'org.slf4j:slf4j-api:jar:1.5.8',
          'org.slf4j:slf4j-log4j12:jar:1.6.1']
