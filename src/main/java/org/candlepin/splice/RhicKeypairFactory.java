@@ -41,7 +41,7 @@ public class RhicKeypairFactory {
         keypairMap = new ConcurrentHashMap<String, KeyPair>();
     }
     
-    public KeyPair getKeyPair(String rhicId) {
+    public synchronized KeyPair getKeyPair(String rhicId) {
         KeyPair kp = keypairMap.get(rhicId);
         if (kp == null) {
             log.info("keypair cache miss for " + rhicId + ". Generating new keypair");
@@ -52,6 +52,10 @@ public class RhicKeypairFactory {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
+            log.debug("new pubkey for " + rhicId + " is " + kp.getPublic());
+        }
+        else {
+            log.debug("cache hit, pubkey for " + rhicId + " is " + kp.getPublic());
         }
         return kp;
     }

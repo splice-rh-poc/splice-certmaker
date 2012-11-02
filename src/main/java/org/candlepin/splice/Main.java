@@ -67,7 +67,7 @@ public class Main {
 
         log.info("starting server on port " + listenPort);
     	server = new Server();
-    	// use NIO connector. I didn't benchmark this, I am just going off the docs here
+    	// use NIO connector. I didn't benchmark this, I am just going off the docs
     	Connector conn = injector.getInstance(SelectChannelConnector.class);
     	conn.setPort(listenPort);
     	conn.setServer(server);

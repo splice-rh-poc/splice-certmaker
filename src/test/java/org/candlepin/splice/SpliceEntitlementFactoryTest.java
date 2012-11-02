@@ -61,9 +61,34 @@ public class SpliceEntitlementFactoryTest {
 	@Mock private RhicKeypairFactory rhicKeypairFactory;
 	
 	@Test
-	public void testRhicIdInEntitlement() {
-		// TODO: impl me
-	}
+	public void testRhicIdInEntitlement() throws IOException {
+        when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
+        KeyPair kp = createKeyPair();
+
+        when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
+
+
+        Set<Product> mockSpliceProductList = new HashSet<Product>();
+        mockSpliceProductList.add(new Product("100", "test product number 100"));
+        
+        when(spliceProductList.getProducts( new String[] {"100"} )).thenReturn(mockSpliceProductList);
+        
+        SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig, x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
+        Date now = new Date();
+        Date later = DateUtils.addHours(now, 1);
+        
+        String[] productList = {"100"};
+        
+        Entitlement e1 = sef.createEntitlement(now, later, productList, "unit-test");
+        for (EntitlementCertificate eci: e1.getCertificates()) {
+      
+            //assert that rhic is in the cert
+                
+            
+        }
+
+        
+    }
 	
 	@Test
 	public void testUniqueCertSerial() throws IOException {

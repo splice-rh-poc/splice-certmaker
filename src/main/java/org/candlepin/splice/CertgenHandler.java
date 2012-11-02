@@ -14,7 +14,6 @@
  */
 package org.candlepin.splice;
 
-import org.candlepin.jackson.ExportBeanPropertyFilter;
 import org.candlepin.model.Entitlement;
 
 import com.google.inject.Inject;
@@ -22,7 +21,6 @@ import com.google.inject.Inject;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
 import org.mortbay.jetty.Request;
 import org.mortbay.jetty.handler.AbstractHandler;
 
@@ -56,7 +54,7 @@ public class CertgenHandler extends AbstractHandler {
         try {
             Entitlement ent = spliceEntitlementFactory.createEntitlement(new Date(),
                     DateUtils.addHours(new Date(), 1), request.getParameterValues("product"),
-                    "foo-rhic-id");
+                    request.getParameter("rhicId"));
             response.getWriter().println(mapper.writeValueAsString(ent));
             response.setStatus(HttpServletResponse.SC_OK);
         }
