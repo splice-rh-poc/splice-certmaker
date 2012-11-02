@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2009 - 2012 Red Hat, Inc.
+ * Copyright (c) 2012 Red Hat, Inc.
  *
  * This software is licensed to you under the GNU General Public License,
  * version 2 (GPLv2). There is NO WARRANTY for this software, express or
@@ -32,28 +32,32 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
+/**
+ * CertgenHandler
+ */
 public class CertgenHandler extends AbstractHandler {
-    
+
     private static Logger log = Logger.getLogger(CertgenHandler.class);
-    
-    ObjectMapper mapper;
-    
-    SpliceEntitlementFactory spliceEntitlementFactory;
+
+    private ObjectMapper mapper;
+    private SpliceEntitlementFactory spliceEntitlementFactory;
 
     @Inject
-    public CertgenHandler(SpliceEntitlementFactory spliceEntitlementFactory, ObjectMapper mapper) {
+    public CertgenHandler(SpliceEntitlementFactory spliceEntitlementFactory,
+                            ObjectMapper mapper) {
         this.spliceEntitlementFactory = spliceEntitlementFactory;
         this.mapper = mapper;
     }
 
     @Override
     public void handle(String target, HttpServletRequest request,
-            HttpServletResponse response, int dispatch)
-        throws IOException, ServletException {
+                        HttpServletResponse response,
+                        int dispatch) throws IOException, ServletException {
         response.setContentType("application/json");
         try {
             Entitlement ent = spliceEntitlementFactory.createEntitlement(new Date(),
-                    DateUtils.addHours(new Date(), 1), request.getParameterValues("product"),
+                    DateUtils.addHours(new Date(), 1),
+                    request.getParameterValues("product"),
                     request.getParameter("rhicId"));
             response.getWriter().println(mapper.writeValueAsString(ent));
             response.setStatus(HttpServletResponse.SC_OK);
@@ -65,7 +69,5 @@ public class CertgenHandler extends AbstractHandler {
         finally {
             ((Request) request).setHandled(true);
         }
-
     }
-
 }

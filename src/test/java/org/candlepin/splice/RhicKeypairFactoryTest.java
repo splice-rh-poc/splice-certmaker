@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2009 - 2012 Red Hat, Inc.
+ * Copyright (c) 2012 Red Hat, Inc.
  *
  * This software is licensed to you under the GNU General Public License,
  * version 2 (GPLv2). There is NO WARRANTY for this software, express or
@@ -33,9 +33,8 @@ import java.security.PublicKey;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RhicKeypairFactoryTest {
-    
-    @Mock private PKIUtility pkiUtility;   
 
+    @Mock private PKIUtility pkiUtility;
 
 //    @Test
 //    public void testKeypairFactory() {
@@ -44,13 +43,13 @@ public class RhicKeypairFactoryTest {
 
     @Test
     public void testGetKeyPair() throws NoSuchAlgorithmException {
-        // run this twice, so we get different mocks back for the comparison later. Thx dgoodwin!
+        // run this twice, so we get different mocks back for the comparison later.
+        // Thx dgoodwin!
         when(pkiUtility.generateNewKeyPair()).thenReturn(createKeyPair(), createKeyPair());
         RhicKeypairFactory kpf = new RhicKeypairFactory(pkiUtility);
         KeyPair kp1 = kpf.getKeyPair("foo");
         KeyPair kp2 = kpf.getKeyPair("foo");
         KeyPair kp3 = kpf.getKeyPair("bar");
-        
         // kp1 should be the same as kp2
         assertTrue(kp1.getPublic().equals(kp2.getPublic()));
         // kp1 should be different than kp3
@@ -62,6 +61,4 @@ public class RhicKeypairFactoryTest {
         PrivateKey ppk = mock(PrivateKey.class);
         return new KeyPair(pk, ppk);
     }
-    
-
 }

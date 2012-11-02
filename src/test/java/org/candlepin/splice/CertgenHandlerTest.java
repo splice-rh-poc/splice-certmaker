@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2009 - 2012 Red Hat, Inc.
+ * Copyright (c) 2012 Red Hat, Inc.
  *
  * This software is licensed to you under the GNU General Public License,
  * version 2 (GPLv2). There is NO WARRANTY for this software, express or
@@ -29,21 +29,19 @@ import java.io.IOException;
 import java.util.Date;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 
 public class CertgenHandlerTest {
 
     @Test
     public void testHandle() throws JsonMappingException, ServletException, IOException {
         SpliceEntitlementFactory sef = mock(SpliceEntitlementFactory.class);
-        when(sef.createEntitlement(any(Date.class), any(Date.class), any(String[].class), any(String.class))).thenThrow(new RuntimeException("oh no!"));
+        when(sef.createEntitlement(any(Date.class), any(Date.class), any(String[].class),
+                            any(String.class))).thenThrow(new RuntimeException("oh no!"));
         CertgenHandler handler = new CertgenHandler(sef, mock(ObjectMapper.class));
         HttpServletResponse resp = mock(Response.class);
         handler.handle(new String(), mock(Request.class), resp, 0);
         verify(resp).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        
     }
 
 }

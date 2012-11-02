@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2009 - 2012 Red Hat, Inc.
+ * Copyright (c) 2012 Red Hat, Inc.
  *
  * This software is licensed to you under the GNU General Public License,
  * version 2 (GPLv2). There is NO WARRANTY for this software, express or
@@ -26,13 +26,16 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * RhicKeypairFactory
+ */
 @Singleton
 public class RhicKeypairFactory {
     private static Logger log = Logger.getLogger(RhicKeypairFactory.class);
-    
-    Map<String, KeyPair> keypairMap;
-   
-    PKIUtility pkiUtility;
+
+    private Map<String, KeyPair> keypairMap;
+
+    private PKIUtility pkiUtility;
 
     @Inject
     public RhicKeypairFactory(PKIUtility pkiUtility) {
@@ -40,7 +43,7 @@ public class RhicKeypairFactory {
         this.pkiUtility = pkiUtility;
         keypairMap = new ConcurrentHashMap<String, KeyPair>();
     }
-    
+
     public synchronized KeyPair getKeyPair(String rhicId) {
         KeyPair kp = keypairMap.get(rhicId);
         if (kp == null) {
@@ -48,7 +51,8 @@ public class RhicKeypairFactory {
             try {
                 kp = pkiUtility.generateNewKeyPair();
                 keypairMap.put(rhicId, kp);
-            } catch (NoSuchAlgorithmException e) {
+            }
+            catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }

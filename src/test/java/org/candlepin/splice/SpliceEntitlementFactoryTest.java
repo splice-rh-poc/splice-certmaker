@@ -17,7 +17,6 @@ package org.candlepin.splice;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -43,7 +42,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Date;
@@ -54,14 +52,41 @@ import java.util.Set;
 @RunWith(MockitoJUnitRunner.class)
 public class SpliceEntitlementFactoryTest {
 
-	@Mock private SpliceConfig spliceConfig;
-	@Mock private X509ExtensionUtil x509ExtensionUtil;
-	@Mock private SpliceProductList spliceProductList;
-	@Mock private PKIUtility pkiUtility;   
-	@Mock private RhicKeypairFactory rhicKeypairFactory;
-	
-	@Test
-	public void testRhicIdInEntitlement() throws IOException {
+    @Mock private SpliceConfig spliceConfig;
+    @Mock private X509ExtensionUtil x509ExtensionUtil;
+    @Mock private SpliceProductList spliceProductList;
+    @Mock private PKIUtility pkiUtility;
+    @Mock private RhicKeypairFactory rhicKeypairFactory;
+
+//    @Test
+//    public void testRhicIdInEntitlement() throws IOException {
+//        when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
+//        KeyPair kp = createKeyPair();
+//
+//        when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
+//
+//
+//        Set<Product> mockSpliceProductList = new HashSet<Product>();
+//        mockSpliceProductList.add(new Product("100", "test product number 100"));
+//
+//        when(spliceProductList.getProducts(new String[] {"100"}))
+//             .thenReturn(mockSpliceProductList);
+//
+//        SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig,
+//             x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
+//        Date now = new Date();
+//        Date later = DateUtils.addHours(now, 1);
+//
+//        String[] productList = {"100"};
+//
+//        Entitlement e1 = sef.createEntitlement(now, later, productList, "unit-test");
+//        for (EntitlementCertificate eci: e1.getCertificates()) {
+//            //assert that rhic is in the cert
+//        }
+//    }
+
+    @Test
+    public void testUniqueCertSerial() throws IOException {
         when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
         KeyPair kp = createKeyPair();
 
@@ -70,176 +95,149 @@ public class SpliceEntitlementFactoryTest {
 
         Set<Product> mockSpliceProductList = new HashSet<Product>();
         mockSpliceProductList.add(new Product("100", "test product number 100"));
-        
-        when(spliceProductList.getProducts( new String[] {"100"} )).thenReturn(mockSpliceProductList);
-        
-        SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig, x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
+
+        when(spliceProductList.getProducts(new String[] {"100"}))
+                    .thenReturn(mockSpliceProductList);
+
+        SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig,
+                x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
         Date now = new Date();
         Date later = DateUtils.addHours(now, 1);
-        
+
         String[] productList = {"100"};
-        
-        Entitlement e1 = sef.createEntitlement(now, later, productList, "unit-test");
-        for (EntitlementCertificate eci: e1.getCertificates()) {
-      
-            //assert that rhic is in the cert
-                
-            
-        }
 
-        
-    }
-	
-	@Test
-	public void testUniqueCertSerial() throws IOException {
-        when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
-        KeyPair kp = createKeyPair();
-
-        when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
-
-
-        Set<Product> mockSpliceProductList = new HashSet<Product>();
-        mockSpliceProductList.add(new Product("100", "test product number 100"));
-        
-        when(spliceProductList.getProducts( new String[] {"100"} )).thenReturn(mockSpliceProductList);
-        
-        SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig, x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
-        Date now = new Date();
-        Date later = DateUtils.addHours(now, 1);
-        
-        String[] productList = {"100"};
-        
         Entitlement e1 = sef.createEntitlement(now, later, productList, "unit-test");
         Entitlement e2 = sef.createEntitlement(now, later, productList, "unit-test");
-        
+
         // make sure serials aren't being duplicated
-        for (EntitlementCertificate eci: e1.getCertificates()) {
-            for (EntitlementCertificate ecj: e2.getCertificates()) {
-                assertTrue(eci.getSerial().getSerial().compareTo(ecj.getSerial().getSerial()) != 0);
+        for (EntitlementCertificate eci : e1.getCertificates()) {
+            for (EntitlementCertificate ecj : e2.getCertificates()) {
+                assertTrue(eci.getSerial().getSerial()
+                        .compareTo(ecj.getSerial().getSerial()) != 0);
             }
         }
-        
     }
-	
-   @Test(expected = RuntimeException.class)
+
+    @Test(expected = RuntimeException.class)
     public void testNullProductFilename() throws IOException {
 
-       when(spliceConfig.getString("splice.product_json")).thenReturn(null);
-       KeyPair kp = createKeyPair();
-       when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
-
-       
-       Set<Product> mockSpliceProductList = new HashSet<Product>();
-       mockSpliceProductList.add(new Product("100", "test product number 100"));
-       
-       when(spliceProductList.getProducts( new String[] {"100"} )).thenReturn(mockSpliceProductList);
-       
-       SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig, x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
-       Date now = new Date();
-       Date later = DateUtils.addHours(now, 1);
-       
-       String[] productList = {"100"};
-       
-       Entitlement e = sef.createEntitlement(now, later, productList, "unit-test");
-       
-       assertEquals(now, e.getStartDate());
-       assertEquals(later, e.getEndDate());
-       assertEquals(1, e.getCertificates().size());
-       verify(spliceProductList).getProducts(productList);
-       
-   }
-	
-	@Test
-	public void testCreateEntitlement() throws IOException {
-
-			when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
-			KeyPair kp = createKeyPair();
-	        when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
-
-		
-            Set<Product> mockSpliceProductList = new HashSet<Product>();
-            mockSpliceProductList.add(new Product("100", "test product number 100"));
-            
-            when(spliceProductList.getProducts( new String[] {"100"} )).thenReturn(mockSpliceProductList);
-            
-			SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig, x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
-			Date now = new Date();
-			Date later = DateUtils.addHours(now, 1);
-			
-			String[] productList = {"100"};
-			
-			Entitlement e = sef.createEntitlement(now, later, productList, "unit-test");
-			
-			assertEquals(now, e.getStartDate());
-			assertEquals(later, e.getEndDate());
-			assertEquals(1, e.getCertificates().size());
-			verify(spliceProductList).getProducts(productList);
-			
-	}
-	
-	@Test(expected = RuntimeException.class)
-	public void testCreateEntitlementNoProducts() throws IOException {
-
-	    when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
-	    KeyPair kp = createKeyPair();
+        when(spliceConfig.getString("splice.product_json")).thenReturn(null);
+        KeyPair kp = createKeyPair();
         when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
 
 
-	    Set<Product> mockSpliceProductList = new HashSet<Product>();
-	    mockSpliceProductList.add(new Product("100", "test product number 100"));
+        Set<Product> mockSpliceProductList = new HashSet<Product>();
+        mockSpliceProductList.add(new Product("100", "test product number 100"));
 
-	    when(spliceProductList.getProducts( new String[] {"100"} )).thenReturn(mockSpliceProductList);
+        when(spliceProductList.getProducts(new String[] {"100"}))
+                .thenReturn(mockSpliceProductList);
 
-	    SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig, x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
-	    Date now = new Date();
-	    Date later = DateUtils.addHours(now, 1);
+        SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig,
+                x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
+        Date now = new Date();
+        Date later = DateUtils.addHours(now, 1);
 
-	    String[] productList = {"100"};
+        String[] productList = {"100"};
 
-	    Entitlement e = sef.createEntitlement(now, later, null, "unit-test");
-	}
-	
+        Entitlement e = sef.createEntitlement(now, later, productList, "unit-test");
+
+        assertEquals(now, e.getStartDate());
+        assertEquals(later, e.getEndDate());
+        assertEquals(1, e.getCertificates().size());
+        verify(spliceProductList).getProducts(productList);
+
+    }
+
+    @Test
+    public void testCreateEntitlement() throws IOException {
+
+        when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
+        KeyPair kp = createKeyPair();
+        when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
+
+
+        Set<Product> mockSpliceProductList = new HashSet<Product>();
+        mockSpliceProductList.add(new Product("100", "test product number 100"));
+
+        when(spliceProductList.getProducts(new String[] {"100"}))
+                .thenReturn(mockSpliceProductList);
+
+        SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig,
+                x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
+        Date now = new Date();
+        Date later = DateUtils.addHours(now, 1);
+
+        String[] productList = {"100"};
+
+        Entitlement e = sef.createEntitlement(now, later, productList, "unit-test");
+
+        assertEquals(now, e.getStartDate());
+        assertEquals(later, e.getEndDate());
+        assertEquals(1, e.getCertificates().size());
+        verify(spliceProductList).getProducts(productList);
+
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testCreateEntitlementNoProducts() throws IOException {
+
+        when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
+        KeyPair kp = createKeyPair();
+        when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
+
+
+        Set<Product> mockSpliceProductList = new HashSet<Product>();
+        mockSpliceProductList.add(new Product("100", "test product number 100"));
+
+        when(spliceProductList.getProducts(new String[] {"100"}))
+                .thenReturn(mockSpliceProductList);
+
+        SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig,
+                x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
+        Date now = new Date();
+        Date later = DateUtils.addHours(now, 1);
+
+        Entitlement e = sef.createEntitlement(now, later, null, "unit-test");
+    }
+
     @Test
     public void testLogOnMissingProduct() throws IOException {
 
         // build up a logger so we can examine output
-        Logger logger = Logger.getLogger(SpliceEntitlementFactory.class);  
-        ByteArrayOutputStream out = new ByteArrayOutputStream();  
+        Logger logger = Logger.getLogger(SpliceEntitlementFactory.class);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
         Appender appender = new WriterAppender(new SimpleLayout(), out);
         logger.setLevel(Level.WARN);
         logger.addAppender(appender);
-        
+
         when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
         KeyPair kp = createKeyPair();
         when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
 
 
-        SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig, x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
+        SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig,
+                x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
         Date now = new Date();
         Date later = DateUtils.addHours(now, 1);
-        
-        String[] productList = {"999"}; // product id that does not exist
-        
-        try {  
-            sef.createEntitlement(now, later, productList, "unit-test");
-            
-            String logMsg = out.toString();  
-            assertNotNull(logMsg);  
-            assertEquals("WARN - product ID 999 not found, not adding to entitlement certificate\n",logMsg);  
-  
-        } finally {  
-            logger.removeAppender(appender);  
-        }  
 
-            
+        String[] productList = {"999"}; // product id that does not exist
+
+        try {
+            sef.createEntitlement(now, later, productList, "unit-test");
+
+            String logMsg = out.toString();
+            assertNotNull(logMsg);
+            assertEquals("WARN - product ID 999 not found, not adding " +
+                    "to entitlement certificate\n", logMsg);
+        }
+        finally {
+            logger.removeAppender(appender);
+        }
     }
-	
-	
+
     private KeyPair createKeyPair() {
         PublicKey pk = mock(PublicKey.class);
         PrivateKey ppk = mock(PrivateKey.class);
         return new KeyPair(pk, ppk);
     }
-
-
 }

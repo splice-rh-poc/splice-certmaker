@@ -28,23 +28,17 @@ import org.mortbay.jetty.nio.SelectChannelConnector;
  * Main
  */
 public class Main {
-	
-	private static Logger log = Logger.getLogger(Main.class);
-	
-	static Injector injector;
-	
-	static Server server;
-	
-	static Config config;
-	 
+
+    private static Logger log = Logger.getLogger(Main.class);
+
+    private static Injector injector;
+    private static Server server;
+    private static Config config;
+
     private Main() {
         // silence checkstyle
     }
 
-    /**
-     * @param args
-     * @throws Exception 
-     */
     public static void main(String[] args) {
 
         // wrap the server start so we can print a full stacktrace if needed
@@ -55,27 +49,27 @@ public class Main {
             log.error("unhandled error from server");
             e.printStackTrace();
         }
-        
+
     }
 
     private static void startServer() throws Exception {
         injector = Guice.createInjector(new CertgenModule());
-        
+
         config = injector.getInstance(SpliceConfig.class);
-        
+
         int listenPort = config.getInt("splice.certmaker_listen_port", 8080);
 
         log.info("starting server on port " + listenPort);
-    	server = new Server();
-    	// use NIO connector. I didn't benchmark this, I am just going off the docs
-    	Connector conn = injector.getInstance(SelectChannelConnector.class);
-    	conn.setPort(listenPort);
-    	conn.setServer(server);
-    	server.addConnector(conn);
-    	server.setThreadPool(injector.getInstance(SpliceQueuedThreadPool.class));
-    	server.setHandler(injector.getInstance(CertgenHandler.class));
-    	server.start();
-    	log.info("server started!");
+        server = new Server();
+        // use NIO connector. I didn't benchmark this, I am just going off the docs
+        Connector conn = injector.getInstance(SelectChannelConnector.class);
+        conn.setPort(listenPort);
+        conn.setServer(server);
+        server.addConnector(conn);
+        server.setThreadPool(injector.getInstance(SpliceQueuedThreadPool.class));
+        server.setHandler(injector.getInstance(CertgenHandler.class));
+        server.start();
+        log.info("server started!");
     }
 
 }

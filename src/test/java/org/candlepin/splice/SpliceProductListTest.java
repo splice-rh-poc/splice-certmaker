@@ -15,101 +15,99 @@
 package org.candlepin.splice;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
-import java.io.EOFException;
-import java.io.IOException;
-
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.EOFException;
+import java.io.IOException;
+
 public class SpliceProductListTest {
 
-    ObjectMapper mapper;
-    
+    private ObjectMapper mapper;
+
     @Before
     public void init() {
         this.mapper = new ObjectMapper();
     }
-    	
-	@Test(expected = EOFException.class)
-	public void testEmptyFileLoad() throws IOException {
-		SpliceProductList spl = new SpliceProductList(mapper);
-		spl.loadProducts(this.getClass().getClassLoader().getResource("empty-file.json").getPath());
-	}
-	
-	@Test
-	public void testNoProductsLoaded() throws IOException {
-		SpliceProductList spl = new SpliceProductList(mapper);
-		assertEquals(0, spl.getAllProducts().size());
-	}
-	
-	@Test
-	public void testProductLoad() throws IOException {
-		SpliceProductList spl = new SpliceProductList(mapper);
-		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
-		assertEquals(3, spl.getAllProducts().size());
-	}
-	
-	@Test
-	public void testGetProductList() throws IOException {
-		SpliceProductList spl = new SpliceProductList(mapper);
-		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
-		
-		String[] shouldExist = {"69"};
-		assertEquals(1, spl.getProducts(shouldExist).size());
-	}
-	
-	@Test
+
+    @Test(expected = EOFException.class)
+    public void testEmptyFileLoad() throws IOException {
+        SpliceProductList spl = new SpliceProductList(mapper);
+        spl.loadProducts(this.getClass().getClassLoader()
+                .getResource("empty-file.json").getPath());
+    }
+
+    @Test
+    public void testNoProductsLoaded() throws IOException {
+        SpliceProductList spl = new SpliceProductList(mapper);
+        assertEquals(0, spl.getAllProducts().size());
+    }
+
+    @Test
+    public void testProductLoad() throws IOException {
+        SpliceProductList spl = new SpliceProductList(mapper);
+        spl.loadProducts(this.getClass().getClassLoader()
+                .getResource("test-products.json").getPath());
+        assertEquals(3, spl.getAllProducts().size());
+    }
+
+    @Test
+    public void testGetProductList() throws IOException {
+        SpliceProductList spl = new SpliceProductList(mapper);
+        spl.loadProducts(this.getClass().getClassLoader()
+                .getResource("test-products.json").getPath());
+        String[] shouldExist = {"69"};
+        assertEquals(1, spl.getProducts(shouldExist).size());
+    }
+
+    @Test
     public void testGetProductListNull() throws IOException {
-	    // this happens if no products were sent in via the URL query params
-	    SpliceProductList spl = new SpliceProductList(mapper);
-	    spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
-
+        // this happens if no products were sent in via the URL query params
+        SpliceProductList spl = new SpliceProductList(mapper);
+        spl.loadProducts(this.getClass().getClassLoader()
+                .getResource("test-products.json").getPath());
         assertEquals(0, spl.getProducts(null).size());
-	}
+    }
 
-	
-	@Test
-	public void testNoProductFound() throws IOException {
-		SpliceProductList spl = new SpliceProductList(mapper);
-		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
-		
-		String[] shouldNotExist = {"123456"};
-		assertEquals(0, spl.getProducts(shouldNotExist).size());
-	}
-	
-	@Test
-	public void testReloadProductList() throws IOException {
-		SpliceProductList spl = new SpliceProductList(mapper);
-		// first load
-		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
-		assertEquals(3, spl.getAllProducts().size());
-		// second load
-		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
-		assertEquals(3, spl.getAllProducts().size());
-	}
-	
-	@Test(expected = RuntimeException.class)
-	public void testDuplicateIdInProductList() throws IOException {
-		SpliceProductList spl = new SpliceProductList(mapper);
-		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products-duplicates.json").getPath());
-	}
-	
-	@Test
-	public void testGetTwoProducts() throws IOException {
-	    SpliceProductList spl = new SpliceProductList(mapper);
+    @Test
+    public void testNoProductFound() throws IOException {
+        SpliceProductList spl = new SpliceProductList(mapper);
+        spl.loadProducts(this.getClass().getClassLoader()
+                .getResource("test-products.json").getPath());
+        String[] shouldNotExist = {"123456"};
+        assertEquals(0, spl.getProducts(shouldNotExist).size());
+    }
 
-		spl.loadProducts(this.getClass().getClassLoader().getResource("test-products.json").getPath());
-		
-		String[] twoProducts = {"69", "83"};
-		assertEquals(2, spl.getProducts(twoProducts).size());
+    @Test
+    public void testReloadProductList() throws IOException {
+        SpliceProductList spl = new SpliceProductList(mapper);
+        // first load
+        spl.loadProducts(this.getClass().getClassLoader()
+                .getResource("test-products.json").getPath());
+        assertEquals(3, spl.getAllProducts().size());
+        // second load
+        spl.loadProducts(this.getClass().getClassLoader()
+                .getResource("test-products.json").getPath());
+        assertEquals(3, spl.getAllProducts().size());
+    }
 
-	}
+    @Test(expected = RuntimeException.class)
+    public void testDuplicateIdInProductList() throws IOException {
+        SpliceProductList spl = new SpliceProductList(mapper);
+        spl.loadProducts(this.getClass().getClassLoader()
+                .getResource("test-products-duplicates.json").getPath());
+    }
+
+    @Test
+    public void testGetTwoProducts() throws IOException {
+        SpliceProductList spl = new SpliceProductList(mapper);
+        spl.loadProducts(this.getClass().getClassLoader()
+                .getResource("test-products.json").getPath());
+        String[] twoProducts = {"69", "83"};
+        assertEquals(2, spl.getProducts(twoProducts).size());
+
+    }
 
 }

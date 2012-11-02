@@ -26,19 +26,19 @@ import com.google.inject.AbstractModule;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+/**
+ * CertgenModule
+ */
 public class CertgenModule extends AbstractModule {
 
-	@Override
-	protected void configure() {
-	    // most of this was copied from candlepin's injector module
-	    bind(Config.class).to(SpliceConfig.class).asEagerSingleton();
+    @Override
+    protected void configure() {
+        // most of this was copied from candlepin's injector module
+        bind(Config.class).to(SpliceConfig.class).asEagerSingleton();
         bind(PKIUtility.class).to(BouncyCastlePKIUtility.class).asEagerSingleton();
         bind(PKIReader.class).to(BouncyCastlePKIReader.class).asEagerSingleton();
-        bind(SubjectKeyIdentifierWriter.class).to(DefaultSubjectKeyIdentifierWriter.class).asEagerSingleton();
+        bind(SubjectKeyIdentifierWriter.class)
+            .to(DefaultSubjectKeyIdentifierWriter.class).asEagerSingleton();
         bind(ObjectMapper.class).to(SpliceObjectMapper.class).asEagerSingleton();
-	}
-
-
-	
-
+    }
 }
