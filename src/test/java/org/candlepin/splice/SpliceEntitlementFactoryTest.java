@@ -17,6 +17,7 @@ package org.candlepin.splice;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -141,10 +142,37 @@ public class SpliceEntitlementFactoryTest {
 
         Entitlement e = sef.createEntitlement(now, later, productList, "unit-test");
 
-        assertEquals(now, e.getStartDate());
-        assertEquals(later, e.getEndDate());
-        assertEquals(1, e.getCertificates().size());
-        verify(spliceProductList).getProducts(productList);
+    }
+
+    @Test
+    public void testNoRhicGiven() throws IOException {
+
+        when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
+        when(rhicKeypairFactory.getKeyPair(any(String.class)))
+                                    .thenThrow(new RuntimeException("exception!"));
+
+
+        Set<Product> mockSpliceProductList = new HashSet<Product>();
+        mockSpliceProductList.add(new Product("100", "test product number 100"));
+
+        when(spliceProductList.getProducts(new String[] {"100"}))
+                .thenReturn(mockSpliceProductList);
+
+        SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig,
+                x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
+        Date now = new Date();
+        Date later = DateUtils.addHours(now, 1);
+
+        String[] productList = {"100"};
+
+        try {
+            sef.createEntitlement(now, later, productList, null);
+            fail();
+        }
+        catch (Exception e) {
+            // we do not want the "exception!" message
+            assertTrue(e.getMessage().equals("no rhic ID specified"));
+        }
 
     }
 

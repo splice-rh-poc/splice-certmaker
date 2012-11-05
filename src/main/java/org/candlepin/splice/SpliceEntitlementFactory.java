@@ -90,6 +90,9 @@ public class SpliceEntitlementFactory {
         if (productIds == null || productIds.length == 0) {
             throw new RuntimeException("no product IDs specified");
         }
+        if (rhicId == null || rhicId.equals("")) {
+            throw new RuntimeException("no rhic ID specified");
+        }
         // grab a keypair for the given rhic
 
         KeyPair keypair = rhicKeypairFactory.getKeyPair(rhicId);
