@@ -29,6 +29,7 @@ TODO
 ====
 
  * use a shared config file with other splice apps
+ * _very important_ configure logging level via shared config
  * figure out how to handle product data
  * possibly write out the keypairs and serial numbers. This isn't needed, but might be worthwhile
  * get someone to review my code

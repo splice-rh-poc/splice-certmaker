@@ -151,7 +151,6 @@ public class SpliceEntitlementFactoryTest {
         when(rhicKeypairFactory.getKeyPair(any(String.class)))
                                     .thenThrow(new RuntimeException("exception!"));
 
-
         Set<Product> mockSpliceProductList = new HashSet<Product>();
         mockSpliceProductList.add(new Product("100", "test product number 100"));
 
