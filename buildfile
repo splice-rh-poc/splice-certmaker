@@ -11,6 +11,7 @@ CANDLEPIN = 'candlepin:candlepin-certgen:jar:0.7.16'
 BOUNCYCASTLE = group('bcprov-jdk16', :under=>'org.bouncycastle', :version=>'1.46')
 
 LOG4J = 'log4j:log4j:jar:1.2.14'
+DAEMON = transitive 'org.kohsuke:akuma:jar:1.7'
 
 GUICE = 'com.google.inject:guice:jar:3.0'
 JETTY = ['org.mortbay.jetty:jetty:jar:6.1.26',
@@ -54,7 +55,7 @@ define "splice-certmaker" do
   project.version = VERSION_NUMBER
   project.group = GROUP
   manifest["Implementation-Vendor"] = COPYRIGHT
-  compile.with [CANDLEPIN, BOUNCYCASTLE, COMMONS, COLLECTIONS, JACKSON, LOG4J, HIBERNATE, GUICE, JETTY, SLF4J] # Add classpath dependencies
+  compile.with [DAEMON, CANDLEPIN, BOUNCYCASTLE, COMMONS, COLLECTIONS, JACKSON, LOG4J, HIBERNATE, GUICE, JETTY, SLF4J] # Add classpath dependencies
   package(:jar)
 
   test.with [JUNIT, COMMONS]

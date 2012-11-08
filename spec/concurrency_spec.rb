@@ -36,7 +36,7 @@ describe 'Concurrency Tests' do
 
 
   it 'request a product cert' do
-    resp = get('http://localhost:8080/foo?product=69&rhicId=single')
+    resp = get('http://localhost:8080/foo?product=69&rhicUUID=single')
     resp.code.should == '200'
   end
 
@@ -44,7 +44,7 @@ describe 'Concurrency Tests' do
     threads = []
     10.times do |i|
         threads[i] = Thread.new{
-            response = get("http://localhost:8080/foo?product=69&rhicId=concurrency-test")
+            response = get("http://localhost:8080/foo?product=69&rhicUUID=concurrency-test")
             result = JSON.parse(response.body)
             Thread.current["key"] = result['certificates'].first['key']
             Thread.current["serial"] = result['certificates'].first['serial']['id']

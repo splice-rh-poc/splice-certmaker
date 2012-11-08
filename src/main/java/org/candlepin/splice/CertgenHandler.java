@@ -58,7 +58,7 @@ public class CertgenHandler extends AbstractHandler {
             Entitlement ent = spliceEntitlementFactory.createEntitlement(new Date(),
                     DateUtils.addHours(new Date(), 1),
                     request.getParameterValues("product"),
-                    request.getParameter("rhicId"));
+                    request.getParameter("rhicUUID"));
             response.getWriter().println(mapper.writeValueAsString(ent));
             response.setStatus(HttpServletResponse.SC_OK);
         }

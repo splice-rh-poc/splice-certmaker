@@ -22,6 +22,7 @@ BuildArch: noarch
 
 Requires(pre): shadow-utils
 # please keep this sorted
+Requires: akuma
 Requires: bouncycastle
 Requires: candlepin-certgen-lib
 Requires: cglib
@@ -34,6 +35,7 @@ Requires: jakarta-commons-collections
 Requires: jakarta-commons-lang
 Requires: java >= 1.6.0
 Requires: jetty-eclipse
+Requires: jna
 Requires: log4j >= 1.2
 Requires: quartz
 

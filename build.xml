@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <project name="splice-certmaker" default="why">
   <property environment="env" />
-  <property name="ts-home" location="." />
-  <property name="script.dir" location="${ts-home}/buildconf/" />
-  <property name="src.main.dir" location="${ts-home}/src/main/java" />
-  <property name="res.main.dir" location="${ts-home}/src/main/resources" />
-  <property name="webapp.main.dir" location="${ts-home}/src/main/webapp" />
-  <property name="src.test.dir" location="${ts-home}/src/test/java" />
-  <property name="res.test.dir" location="${ts-home}/src/test/resources" />
-  <property name="webapp.test.dir" location="${ts-home}/src/test/webapp" />
-  <property name="target.dir" location="${ts-home}/target" />
+  <property name="certmaker-home" location="." />
+  <property name="script.dir" location="${certmaker-home}/buildconf/" />
+  <property name="src.main.dir" location="${certmaker-home}/src/main/java" />
+  <property name="res.main.dir" location="${certmaker-home}/src/main/resources" />
+  <property name="webapp.main.dir" location="${certmaker-home}/src/main/webapp" />
+  <property name="src.test.dir" location="${certmaker-home}/src/test/java" />
+  <property name="res.test.dir" location="${certmaker-home}/src/test/resources" />
+  <property name="webapp.test.dir" location="${certmaker-home}/src/test/webapp" />
+  <property name="target.dir" location="${certmaker-home}/target" />
   <property name="lib.dir" location="${libdir}" />
   <property name="pkgname" value="org.candlepin.splice" />
 
@@ -31,7 +31,7 @@
   <target name="setvr">
     <grepfromspec text="Version:" prop="version" />
     <grepfromspec text="Release:" prop="release" />
-    <property name="ts.jar"
+    <property name="certmaker.jar"
               value="${target.dir}/splice-certmaker.jar" />
   </target>
 
@@ -67,7 +67,7 @@
   </target>
 
   <target name="package" depends="compile">
-    <jar destfile="${ts.jar}">
+    <jar destfile="${certmaker.jar}">
       <fileset dir="${target.dir}/classes"/>
       <fileset dir="${target.dir}/resources"/>
 
@@ -77,7 +77,7 @@
         <attribute name="Build-By" value="${env.USER}" />
         <attribute name="Created-By" value="Buildr" />
         <attribute name="Implementation-Version" value="" />
-        <attribute name="Implementation-Title" value="The Proxy project" />
+        <attribute name="Implementation-Title" value="splice certmaker" />
         <attribute name="Build-Jdk" value="" />
         <attribute name="Main-Class" value="org.candlepin.splice.Main" />
       </manifest>

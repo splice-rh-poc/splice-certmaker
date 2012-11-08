@@ -18,6 +18,7 @@ import org.candlepin.config.Config;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.sun.akuma.Daemon;
 
 import org.apache.log4j.Logger;
 import org.mortbay.jetty.Connector;
@@ -35,11 +36,40 @@ public class Main {
     private static Server server;
     private static Config config;
 
+    private static final int ERROR_DAEMON_INIT = -1;
+    private static final int ERROR_DAEMON_DAEMONIZE = -2;
+    private static final int ERROR_NO_CONFIG = -4;
+
+
     private Main() {
         // silence checkstyle
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+
+        // daemonization stuff
+        Daemon daemon = new Daemon();
+
+        //TODO: read from config
+        boolean shouldDaemonize = false;
+        if (System.getProperty("daemonize") != null) {
+            shouldDaemonize = Boolean.valueOf(System.getProperty("daemonize"));
+        }
+
+        String pidfile = "/var/run/splice/splice-certmaker.pid";
+
+        if (daemon.isDaemonized()) {
+            // if we are in here, we are the forked copy
+            daemon.init(pidfile);
+        }
+        else {
+            // if we are in here, we are *not* the forked copy
+            if (shouldDaemonize) {
+                daemon.daemonize();
+                System.out.println("Running certmaker in daemon mode.");
+                System.exit(0);
+            }
+        }
 
         // wrap the server start so we can print a full stacktrace if needed
         try {
@@ -49,6 +79,18 @@ public class Main {
             log.error("unhandled error from server");
             e.printStackTrace();
         }
+
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            public void run() {
+                try {
+                    shutdownServer();
+                }
+                catch (Exception e) {
+                    log.error("unhandled error from server during shutdown!");
+                    e.printStackTrace();
+                }
+            }
+        }, "shutdownHook"));
 
     }
 
@@ -70,6 +112,12 @@ public class Main {
         server.setHandler(injector.getInstance(CertgenHandler.class));
         server.start();
         log.info("server started!");
+    }
+
+    private static void shutdownServer() throws Exception {
+        log.warn("Shutting down...");
+        server.stop();
+        log.warn("Shutdown complete");
     }
 
 }
