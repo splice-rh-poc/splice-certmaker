@@ -1,10 +1,13 @@
-require "./buildr/checkstyle"
+require "buildr/checkstyle"
 
 # Version number for this release
 VERSION_NUMBER = "1.0.0"
 # Group identifier for your projects
 GROUP = "splice-certmaker"
 COPYRIGHT = ""
+
+# Specify Maven 2.0 remote repositories here, like this:
+repositories.remote << "http://repo1.maven.org/maven2"
 
 CANDLEPIN = 'candlepin:candlepin-certgen:jar:0.7.16'
 
@@ -46,8 +49,6 @@ SLF4J = [ 'org.slf4j:slf4j-api:jar:1.5.8',
          'org.slf4j:slf4j-log4j12:jar:1.6.1']
 
 
-# Specify Maven 2.0 remote repositories here, like this:
-repositories.remote << "http://repo1.maven.org/maven2"
 
 desc "The Splice-certmaker project"
 define "splice-certmaker" do
