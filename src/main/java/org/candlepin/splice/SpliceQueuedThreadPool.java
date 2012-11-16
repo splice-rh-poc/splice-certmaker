@@ -29,7 +29,7 @@ public class SpliceQueuedThreadPool extends QueuedThreadPool {
 
         // TODO: read this from a conf file, and log what we did!
         this.setMinThreads(2);
-        this.setMaxThreads(5);
+        this.setMaxThreads(20);
     }
 
     public SpliceQueuedThreadPool(int maxThreads) {
