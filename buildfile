@@ -8,8 +8,9 @@ COPYRIGHT = ""
 
 # Specify Maven 2.0 remote repositories here, like this:
 repositories.remote << "http://repo1.maven.org/maven2"
+repositories.remote << "http://ec2-23-22-86-129.compute-1.amazonaws.com/pub/jars"
 
-CANDLEPIN = 'candlepin:candlepin-certgen:jar:0.7.16'
+CANDLEPIN = 'candlepin:candlepin-certgen:jar:0.7.19'
 
 BOUNCYCASTLE = group('bcprov-jdk16', :under=>'org.bouncycastle', :version=>'1.46')
 
