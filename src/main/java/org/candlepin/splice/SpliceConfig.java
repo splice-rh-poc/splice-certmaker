@@ -14,21 +14,57 @@
  */
 package org.candlepin.splice;
 
-import org.candlepin.config.Config;
+import com.google.inject.Inject;
 
 import org.apache.log4j.Logger;
+import org.ini4j.Ini;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * SpliceConfig
  */
-public class SpliceConfig extends Config {
+public class SpliceConfig {
     private static Logger log = Logger.getLogger(SpliceConfig.class);
 
     private static final String CERTGEN_CONF_FILE =
-                        "/etc/splice-certmaker/splice-certmaker.conf";
+                        "/etc/splice/server.conf";
+    private static final String CERTGEN_INI_SECTION = "certmaker";
 
-    public SpliceConfig() {
-        super(CERTGEN_CONF_FILE);
-        log.info("loaded config from " + CERTGEN_CONF_FILE);
+    private static Map<String, String> configMap;
+
+    public SpliceConfig(Ini ini, String filename) {
+        log.info("loaded config from " + filename);
+        try {
+            ini.load(new FileReader(filename));
+        }
+        catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            throw new RuntimeException("Unable to read or parse config file");
+        }
+        configMap = ini.get(CERTGEN_INI_SECTION);
+        if (configMap == null) {
+            throw new RuntimeException(CERTGEN_INI_SECTION +
+                    " section not found in conf file.");
+        }
+    }
+
+    @Inject
+    public SpliceConfig(Ini ini) {
+        this(ini, CERTGEN_CONF_FILE);
+    }
+
+    public int getInt(String key, int defaultValue) {
+        if (configMap.containsKey(key)) {
+            return Integer.parseInt(configMap.get(key));
+        }
+        return defaultValue;
+    }
+
+    public String getString(String key) {
+        return configMap.get(key);
     }
 }

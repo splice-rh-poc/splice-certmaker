@@ -88,7 +88,8 @@ public class SpliceEntitlementFactoryTest {
 
     @Test
     public void testUniqueCertSerial() throws IOException {
-        when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
+        when(spliceConfig.getString("product_json")).thenReturn(this.getClass()
+                .getClassLoader().getResource("test-products.json").getPath());
         KeyPair kp = createKeyPair();
 
         when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
@@ -122,7 +123,7 @@ public class SpliceEntitlementFactoryTest {
     @Test(expected = RuntimeException.class)
     public void testNullProductFilename() throws IOException {
 
-        when(spliceConfig.getString("splice.product_json")).thenReturn(null);
+        when(spliceConfig.getString("product_json")).thenReturn(null);
         KeyPair kp = createKeyPair();
         when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
 
@@ -147,7 +148,8 @@ public class SpliceEntitlementFactoryTest {
     @Test
     public void testNoRhicGiven() throws IOException {
 
-        when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
+        when(spliceConfig.getString("product_json")).thenReturn(this.getClass()
+                .getClassLoader().getResource("test-products.json").getPath());
         when(rhicKeypairFactory.getKeyPair(any(String.class)))
                                     .thenThrow(new RuntimeException("exception!"));
 
@@ -178,7 +180,8 @@ public class SpliceEntitlementFactoryTest {
     @Test
     public void testCreateEntitlement() throws IOException {
 
-        when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
+        when(spliceConfig.getString("product_json")).thenReturn(this.getClass()
+                .getClassLoader().getResource("test-products.json").getPath());
         KeyPair kp = createKeyPair();
         when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
 
@@ -208,7 +211,8 @@ public class SpliceEntitlementFactoryTest {
     @Test(expected = RuntimeException.class)
     public void testCreateEntitlementNoProducts() throws IOException {
 
-        when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
+        when(spliceConfig.getString("product_json")).thenReturn(this.getClass()
+                .getClassLoader().getResource("test-products.json").getPath());
         KeyPair kp = createKeyPair();
         when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
 
@@ -237,7 +241,8 @@ public class SpliceEntitlementFactoryTest {
         logger.setLevel(Level.WARN);
         logger.addAppender(appender);
 
-        when(spliceConfig.getString("splice.product_json")).thenReturn("/tmp/test.json");
+        when(spliceConfig.getString("product_json")).thenReturn(this.getClass()
+                .getClassLoader().getResource("test-products.json").getPath());
         KeyPair kp = createKeyPair();
         when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
 

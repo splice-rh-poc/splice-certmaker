@@ -14,8 +14,6 @@
  */
 package org.candlepin.splice;
 
-import org.candlepin.config.Config;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.sun.akuma.Daemon;
@@ -34,7 +32,7 @@ public class Main {
 
     private static Injector injector;
     private static Server server;
-    private static Config config;
+    private static SpliceConfig config;
 
     private static final int ERROR_DAEMON_INIT = -1;
     private static final int ERROR_DAEMON_DAEMONIZE = -2;
@@ -47,6 +45,15 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
+        try {
+            injector = Guice.createInjector(new CertgenModule());
+            config = injector.getInstance(SpliceConfig.class);
+        }
+        catch (Exception e) {
+            log.error("unhandled error during initialization");
+            e.printStackTrace();
+        }
+
         // daemonization stuff
         Daemon daemon = new Daemon();
 
@@ -56,11 +63,9 @@ public class Main {
             shouldDaemonize = Boolean.valueOf(System.getProperty("daemonize"));
         }
 
-        String pidfile = "/var/run/splice/splice-certmaker.pid";
-
         if (daemon.isDaemonized()) {
             // if we are in here, we are the forked copy
-            daemon.init(pidfile);
+            daemon.init(config.getString("pid_file"));
         }
         else {
             // if we are in here, we are *not* the forked copy
@@ -73,7 +78,7 @@ public class Main {
 
         // wrap the server start so we can print a full stacktrace if needed
         try {
-            startServer();
+            startServer(config);
         }
         catch (Exception e) {
             log.error("unhandled error from server");
@@ -94,16 +99,13 @@ public class Main {
 
     }
 
-    private static void startServer() throws Exception {
-        injector = Guice.createInjector(new CertgenModule());
+    private static void startServer(SpliceConfig config) throws Exception {
 
-        config = injector.getInstance(SpliceConfig.class);
 
-        int listenPort = config.getInt("splice.certmaker_listen_port", 8080);
+        int listenPort = config.getInt("certmaker_listen_port", 8080);
 
         log.info("starting server on port " + listenPort);
         server = new Server();
-        // use NIO connector. I didn't benchmark this, I am just going off the docs
         Connector conn = injector.getInstance(SelectChannelConnector.class);
         conn.setPort(listenPort);
         conn.setServer(server);

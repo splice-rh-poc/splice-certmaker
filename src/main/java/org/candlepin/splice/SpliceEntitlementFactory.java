@@ -72,9 +72,9 @@ public class SpliceEntitlementFactory {
         this.pkiUtility = pkiUtility;
         this.rhicKeypairFactory = rhicKeypairFactory;
 
-        String productFilename = config.getString("splice.product_json");
+        String productFilename = config.getString("product_json");
         if (productFilename == null) {
-            throw new RuntimeException("splice.product_json is not defined " +
+            throw new RuntimeException("product_json is not defined " +
                 "in config file!");
         }
         spliceProductList.loadProducts(productFilename);

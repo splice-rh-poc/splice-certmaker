@@ -30,6 +30,7 @@ Requires: codehaus-jackson-core-lgpl
 Requires: codehaus-jackson-mapper-lgpl
 Requires: google-collections
 Requires: google-guice
+Requires: ini4j
 Requires: jakarta-commons-codec >= 1.4
 Requires: jakarta-commons-collections
 Requires: jakarta-commons-lang
