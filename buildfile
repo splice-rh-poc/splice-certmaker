@@ -1,4 +1,4 @@
-require "./buildr/checkstyle"
+require "buildr/checkstyle"
 
 # Version number for this release
 VERSION_NUMBER = "1.0.0"
