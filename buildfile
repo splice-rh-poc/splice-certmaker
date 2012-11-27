@@ -1,4 +1,4 @@
-require "buildr/checkstyle"
+require "./buildr/checkstyle"
 
 # Version number for this release
 VERSION_NUMBER = "1.0.0"
@@ -51,6 +51,9 @@ JUNIT = ['junit:junit:jar:4.5', 'org.mockito:mockito-all:jar:1.9.5']
 SLF4J = [ 'org.slf4j:slf4j-api:jar:1.5.8',
          'org.slf4j:slf4j-log4j12:jar:1.6.1']
 
+RESTEASY = ['org.jboss.resteasy:resteasy-jaxrs:jar:2.3.5.Final',
+            'org.jboss.resteasy:jaxrs-api:jar:2.3.5.Final',
+            'org.jboss.resteasy:resteasy-jackson-provider:jar:2.3.5.Final']
 
 
 desc "The Splice-certmaker project"
@@ -59,7 +62,7 @@ define "splice-certmaker" do
   project.version = VERSION_NUMBER
   project.group = GROUP
   manifest["Implementation-Vendor"] = COPYRIGHT
-  compile.with [DAEMON, CANDLEPIN, BOUNCYCASTLE, COMMONS, COLLECTIONS, JACKSON, LOG4J, HIBERNATE, GUICE, JETTY, SLF4J, INI4J] # Add classpath dependencies
+  compile.with [DAEMON, CANDLEPIN, BOUNCYCASTLE, COMMONS, COLLECTIONS, JACKSON, LOG4J, HIBERNATE, GUICE, JETTY, SLF4J, INI4J, RESTEASY] # Add classpath dependencies
   package(:jar)
 
   test.with [JUNIT, COMMONS]

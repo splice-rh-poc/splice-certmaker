@@ -34,9 +34,13 @@ describe 'Concurrency Tests' do
     return client.request(Net::HTTP::Get.new(uri.request_uri))
   end
 
+  it 'check the ping page' do
+    resp = get('http://localhost:8080/ping')
+    resp.code.should == '200'
+  end
 
   it 'request a product cert' do
-    resp = get('http://localhost:8080/foo?product=69&rhicUUID=single')
+    resp = get('http://localhost:8080/cert/single?product=69')
     resp.code.should == '200'
   end
 
@@ -44,7 +48,7 @@ describe 'Concurrency Tests' do
     threads = []
     10.times do |i|
         threads[i] = Thread.new{
-            response = get("http://localhost:8080/foo?product=69&rhicUUID=concurrency-test")
+            response = get("http://localhost:8080/cert/concurrency-test?product=69")
             result = JSON.parse(response.body)
             Thread.current["key"] = result['certificates'].first['key']
             Thread.current["serial"] = result['certificates'].first['serial']['id']

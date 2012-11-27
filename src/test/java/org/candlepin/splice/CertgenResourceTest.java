@@ -16,32 +16,25 @@ package org.candlepin.splice;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
-import org.mortbay.jetty.Request;
-import org.mortbay.jetty.Response;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
+public class CertgenResourceTest {
 
-public class CertgenHandlerTest {
-
-    @Test
-    public void testHandle() throws JsonMappingException, ServletException, IOException {
+    @Test(expected = RuntimeException.class)
+    public void testHandleException() throws RuntimeException {
         SpliceEntitlementFactory sef = mock(SpliceEntitlementFactory.class);
         when(sef.createEntitlement(any(Date.class), any(Date.class), any(String[].class),
                             any(String.class))).thenThrow(new RuntimeException("oh no!"));
-        CertgenHandler handler = new CertgenHandler(sef, mock(ObjectMapper.class));
-        HttpServletResponse resp = mock(Response.class);
-        handler.handle(new String(), mock(Request.class), resp, 0);
-        verify(resp).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        CertgenResource certgenResource =
+                    new CertgenResource(sef, mock(ObjectMapper.class));
+
+        certgenResource.getCert(new ArrayList<String>(), new String());
     }
 
 }

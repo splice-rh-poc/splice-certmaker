@@ -19,9 +19,14 @@ import com.google.inject.Injector;
 import com.sun.akuma.Daemon;
 
 import org.apache.log4j.Logger;
+import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.nio.SelectChannelConnector;
+import org.mortbay.jetty.servlet.Context;
+import org.mortbay.jetty.servlet.ServletHandler;
+import org.mortbay.jetty.servlet.ServletHolder;
+
 
 /**
  * Main
@@ -101,7 +106,6 @@ public class Main {
 
     private static void startServer(SpliceConfig config) throws Exception {
 
-
         int listenPort = config.getInt("certmaker_listen_port", 8080);
 
         log.info("starting server on port " + listenPort);
@@ -111,7 +115,20 @@ public class Main {
         conn.setServer(server);
         server.addConnector(conn);
         server.setThreadPool(injector.getInstance(SpliceQueuedThreadPool.class));
-        server.setHandler(injector.getInstance(CertgenHandler.class));
+
+        // set up resteasy
+        // TODO: this stuff should be injected?
+        Context root = new Context(server, "/", Context.NO_SECURITY);
+        ServletHandler sh = injector.getInstance(ServletHandler.class);
+        HttpServletDispatcher hsd = injector.getInstance(HttpServletDispatcher.class);
+        ServletHolder shold = injector.getInstance(ServletHolder.class);
+        shold.setInitParameter("javax.ws.rs.Application",
+                "org.candlepin.splice.CertmakerServices");
+
+        shold.setServlet(hsd);
+        sh.addServlet(shold);
+        root.addServlet(shold, "/*"); // pass everything to resteasy
+
         server.start();
         log.info("server started!");
     }
