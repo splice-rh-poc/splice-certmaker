@@ -39,6 +39,7 @@ Requires: jetty-eclipse
 Requires: jna
 Requires: log4j >= 1.2
 Requires: quartz
+Requires: resteasy >= 0:2.3.1
 
 
 # TODO: this is missing a lot of deps

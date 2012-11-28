@@ -117,7 +117,6 @@ public class Main {
         server.setThreadPool(injector.getInstance(SpliceQueuedThreadPool.class));
 
         // set up resteasy
-        // TODO: this stuff should be injected?
         Context root = new Context(server, "/", Context.NO_SECURITY);
         ServletHandler sh = injector.getInstance(ServletHandler.class);
         HttpServletDispatcher hsd = injector.getInstance(HttpServletDispatcher.class);
