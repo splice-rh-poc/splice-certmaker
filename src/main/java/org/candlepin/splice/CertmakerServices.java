@@ -16,6 +16,7 @@ package org.candlepin.splice;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Stage;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,7 +32,7 @@ public class CertmakerServices extends Application {
 
     public CertmakerServices() {
         // this is initialized via servlet configs, so we can't pass an injector in
-        Injector injector = Guice.createInjector(new CertgenModule());
+        Injector injector = Guice.createInjector(Stage.PRODUCTION, new CertgenModule());
 
         services.add(injector.getInstance(PingResource.class));
         services.add(injector.getInstance(CertgenResource.class));

@@ -16,6 +16,7 @@ package org.candlepin.splice;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Stage;
 import com.sun.akuma.Daemon;
 
 import org.apache.log4j.Logger;
@@ -51,7 +52,8 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         try {
-            injector = Guice.createInjector(new CertgenModule());
+            //TODO: read config after daemonizing, so daemon's log messages don't go to stdout
+            injector = Guice.createInjector(Stage.PRODUCTION, new CertgenModule());
             config = injector.getInstance(SpliceConfig.class);
         }
         catch (Exception e) {

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CP=/usr/share/splice-certmaker/splice-certmaker.jar:/usr/share/java/*:/usr/share/java/codehaus-jackson/*:/usr/share/java/slf4j/*:/usr/share/java/objectweb-asm/*:/usr/share/java/jetty-eclipse/*:/usr/share/java/apache-tomcat-apis/*
+CP=/usr/share/splice-certmaker/splice-certmaker.jar:/usr/share/java/*:/usr/share/java/codehaus-jackson/*:/usr/share/java/slf4j/*:/usr/share/java/objectweb-asm/*:/usr/share/java/jetty-eclipse/*:/usr/share/java/apache-tomcat-apis/*:/usr/share/java/resteasy/*:/usr/share/java/codehaus-jackson/*
 
 java -Ddaemonize=true -cp $CP org.candlepin.splice.Main
 
