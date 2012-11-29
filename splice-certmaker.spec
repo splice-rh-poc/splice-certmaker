@@ -40,6 +40,7 @@ Requires: jna
 Requires: log4j >= 1.2
 Requires: quartz
 Requires: resteasy >= 0:2.3.1
+Requires: scannotation
 
 
 # TODO: this is missing a lot of deps

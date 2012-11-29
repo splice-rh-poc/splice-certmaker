@@ -14,8 +14,13 @@
  */
 package org.candlepin.splice;
 
+import com.google.inject.ConfigurationException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.ProvisionException;
+import com.google.inject.Stage;
+
+import org.apache.log4j.Logger;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,15 +31,26 @@ import javax.ws.rs.core.Application;
  * CertmakerServices
  */
 public class CertmakerServices extends Application {
+    
+    private static Logger log = Logger.getLogger(CertmakerServices.class);
+
 
     private static Set<Object> services = new HashSet<Object>();
 
     public CertmakerServices() {
         // this is initialized via servlet configs, so we can't pass an injector in
-        Injector injector = Guice.createInjector(new CertgenModule());
+        Injector injector = Guice.createInjector(Stage.PRODUCTION, new CertgenModule());
 
+        try {
         services.add(injector.getInstance(PingResource.class));
         services.add(injector.getInstance(CertgenResource.class));
+        }
+        catch (ProvisionException pe) {
+             log.error("error during provisioning", pe);
+        }
+        catch (ConfigurationException ce) {
+            log.error("guice configuration error during provisioning", ce);
+        }
 
     }
 
