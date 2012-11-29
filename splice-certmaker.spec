@@ -26,8 +26,10 @@ Requires: akuma
 Requires: bouncycastle
 Requires: candlepin-certgen-lib
 Requires: cglib
-Requires: codehaus-jackson-core-lgpl
-Requires: codehaus-jackson-mapper-lgpl
+Requires: codehaus-jackson-core-asl
+Requires: codehaus-jackson-jaxrs
+Requires: codehaus-jackson-mapper-asl
+Requires: codehaus-jackson-mapper-asl
 Requires: google-collections
 Requires: google-guice
 Requires: ini4j
@@ -41,6 +43,8 @@ Requires: log4j >= 1.2
 Requires: quartz
 Requires: resteasy >= 0:2.3.1
 Requires: scannotation
+#not sure why this is needed by resteasy
+Requires: snakeyaml
 
 
 # TODO: this is missing a lot of deps
