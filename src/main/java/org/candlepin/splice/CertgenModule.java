@@ -14,6 +14,7 @@
  */
 package org.candlepin.splice;
 
+import org.candlepin.config.Config;
 import org.candlepin.pki.PKIReader;
 import org.candlepin.pki.PKIUtility;
 import org.candlepin.pki.SubjectKeyIdentifierWriter;
@@ -38,5 +39,6 @@ public class CertgenModule extends AbstractModule {
         bind(SubjectKeyIdentifierWriter.class)
             .to(DefaultSubjectKeyIdentifierWriter.class).asEagerSingleton();
         bind(ObjectMapper.class).to(SpliceObjectMapper.class).asEagerSingleton();
+        bind(Config.class).to(SpliceConfig.class).asEagerSingleton();
     }
 }

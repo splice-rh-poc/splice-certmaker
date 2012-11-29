@@ -14,6 +14,8 @@
  */
 package org.candlepin.splice;
 
+import org.candlepin.config.Config;
+
 import com.google.inject.Inject;
 
 import org.apache.log4j.Logger;
@@ -26,17 +28,34 @@ import java.util.Map;
 /**
  * SpliceConfig
  */
-public class SpliceConfig {
+public class SpliceConfig extends Config {
     private static Logger log = Logger.getLogger(SpliceConfig.class);
 
     private static final String CERTGEN_CONF_FILE =
-                        "/etc/splice/server.conf";
-    private static final String CERTGEN_INI_SECTION = "certmaker";
+                        "/etc/splice/conf.d/server.conf";
+    private static final String CERTGEN_SHARED_CONF_FILE =
+                        "/etc/splice/splice.conf";
+    private static final String CERTGEN_INI_SECTION_CERTMAKER = "entitlement";
+    private static final String CERTGEN_INI_SECTION_CERTS = "security";
 
-    private static Map<String, String> configMap;
+    public SpliceConfig(Ini ini, String filename, String sharedFilename) {
+        log.info("loading server config from " + filename);
+        Map<String, String> serverConfigMap = loadConfigFile(ini, filename,
+                CERTGEN_INI_SECTION_CERTMAKER);
 
-    public SpliceConfig(Ini ini, String filename) {
-        log.info("loaded config from " + filename);
+        log.info("loading shared config from " + sharedFilename);
+        Map<String, String> sharedConfigMap = loadConfigFile(ini, sharedFilename,
+                CERTGEN_INI_SECTION_CERTS);
+
+        configuration.putAll(serverConfigMap);
+        configuration.putAll(sharedConfigMap);
+        configuration.put("candlepin.ca_key", configuration.get("rhic_ca_key"));
+        configuration.put("candlepin.ca_cert", configuration.get("rhic_ca_cert"));
+        configuration.put("candlepin.upstream_ca_cert",
+                                configuration.get("rhic_ca_cert"));
+    }
+
+    private Map<String, String> loadConfigFile(Ini ini, String filename, String section) {
         try {
             ini.load(new FileReader(filename));
         }
@@ -45,26 +64,17 @@ public class SpliceConfig {
             e.printStackTrace();
             throw new RuntimeException("Unable to read or parse config file");
         }
-        configMap = ini.get(CERTGEN_INI_SECTION);
+        Map<String, String> configMap = ini.get(section);
+
         if (configMap == null) {
-            throw new RuntimeException(CERTGEN_INI_SECTION +
+            throw new RuntimeException(section +
                     " section not found in conf file.");
         }
+        return configMap;
     }
 
     @Inject
     public SpliceConfig(Ini ini) {
-        this(ini, CERTGEN_CONF_FILE);
-    }
-
-    public int getInt(String key, int defaultValue) {
-        if (configMap.containsKey(key)) {
-            return Integer.parseInt(configMap.get(key));
-        }
-        return defaultValue;
-    }
-
-    public String getString(String key) {
-        return configMap.get(key);
+        this(ini, CERTGEN_CONF_FILE, CERTGEN_SHARED_CONF_FILE);
     }
 }

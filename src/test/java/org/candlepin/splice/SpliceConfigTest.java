@@ -17,37 +17,52 @@ package org.candlepin.splice;
 import static org.junit.Assert.assertEquals;
 
 import org.ini4j.Ini;
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class SpliceConfigTest {
 
+    private String testConfigFilename;
+    private String testSharedConfigFilename;
+    private String testConfigNoSectionFilename;
+
+
+    @Before
+    public void initialize() {
+        testConfigFilename = this.getClass().getClassLoader()
+                .getResource("test_config.conf").getPath();
+        testSharedConfigFilename = this.getClass().getClassLoader()
+                .getResource("test_config_common.conf").getPath();
+        testConfigNoSectionFilename = this.getClass().getClassLoader()
+                .getResource("test_config_no_section.conf").getPath();
+    }
+
     @Test
     public void testGetInt() {
-        SpliceConfig conf = new SpliceConfig(new Ini(), this.getClass().getClassLoader()
-                .getResource("test_config.conf").getPath());
+        SpliceConfig conf = new SpliceConfig(new Ini(), testConfigFilename,
+                                        testSharedConfigFilename);
         assertEquals(8080, conf.getInt("port", 123));
         assertEquals(123, conf.getInt("not_exist", 123));
-
     }
 
     @Test
     public void testGetString() {
-        SpliceConfig conf = new SpliceConfig(new Ini(), this.getClass().getClassLoader()
-                .getResource("test_config.conf").getPath());
+        SpliceConfig conf = new SpliceConfig(new Ini(), testConfigFilename,
+                                                testSharedConfigFilename);
         assertEquals("foo", conf.getString("some_value"));
     }
 
     @Test
     public void testNoKey() {
-        SpliceConfig conf = new SpliceConfig(new Ini(), this.getClass().getClassLoader()
-                .getResource("test_config.conf").getPath());
+        SpliceConfig conf = new SpliceConfig(new Ini(), testConfigFilename,
+                                            testSharedConfigFilename);
+
         assertEquals(null, conf.getString("does_not_exist"));
     }
 
     @Test(expected = RuntimeException.class)
     public void testNoSection() {
-        new SpliceConfig(new Ini(), this.getClass().getClassLoader()
-                .getResource("test_config_no_section.conf").getPath());
+        new SpliceConfig(new Ini(), testConfigNoSectionFilename, testSharedConfigFilename);
     }
 }

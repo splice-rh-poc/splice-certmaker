@@ -38,6 +38,8 @@ COLLECTIONS = 'com.google.collections:google-collections:jar:1.0'
 
 INI4J = 'org.ini4j:ini4j:jar:0.5.2'
 
+QUARTZ = 'org.quartz-scheduler:quartz:jar:2.1.5'
+
 JACKSON = [group('jackson-core-lgpl',
                  'jackson-mapper-lgpl',
                  'jackson-jaxrs',
@@ -62,7 +64,7 @@ define "splice-certmaker" do
   project.version = VERSION_NUMBER
   project.group = GROUP
   manifest["Implementation-Vendor"] = COPYRIGHT
-  compile.with [DAEMON, CANDLEPIN, BOUNCYCASTLE, COMMONS, COLLECTIONS, JACKSON, LOG4J, HIBERNATE, GUICE, JETTY, SLF4J, INI4J, RESTEASY] # Add classpath dependencies
+  compile.with [DAEMON, CANDLEPIN, BOUNCYCASTLE, COMMONS, COLLECTIONS, JACKSON, LOG4J, HIBERNATE, GUICE, JETTY, SLF4J, INI4J, RESTEASY, QUARTZ] # Add classpath dependencies
   package(:jar)
 
   test.with [JUNIT, COMMONS]
