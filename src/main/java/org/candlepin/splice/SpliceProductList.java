@@ -14,14 +14,6 @@
  */
 package org.candlepin.splice;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
 import org.candlepin.model.Content;
 import org.candlepin.model.Product;
 import org.candlepin.model.ProductAttribute;
@@ -29,10 +21,17 @@ import org.candlepin.model.ProductContent;
 
 import com.google.inject.Inject;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * SpliceProductList
@@ -42,20 +41,47 @@ public class SpliceProductList {
 
     private static Logger log = Logger.getLogger(SpliceProductList.class);
     private List<Product> productList;
+    // this is just a unix timestamp!
+    private long listCreationSerialNumber;
 
     @Inject
     public SpliceProductList(ObjectMapper mapper) {
         this.mapper = mapper;
         productList = new ArrayList<Product>();
     }
+    
+    // this needs to be static so jackson can create one without having
+    // to create the outer class!
+    public static class JsonDataContainer {
+        public long creationSerialNumber;
+        public List<Product> products;
+    }
 
 
     public void loadProducts(String filename) throws JsonParseException,
     JsonMappingException, IOException {
-        log.debug("loading product from " + filename);
+        log.debug("loading product list from " + filename);
         File file = new File(filename);
-        productList = mapper.readValue(file, new TypeReference<List<Product>>() { });
+        JsonDataContainer jdc = mapper.readValue(file, JsonDataContainer.class);
+        
+        // ensure we are not importing identical or stale data
+        
+        if (jdc.creationSerialNumber <= listCreationSerialNumber) {
+            throw new RuntimeException("imported data cannot have lower serial number" +
+            		" than existing data. Existing: " + listCreationSerialNumber +
+            		", import: " + jdc.creationSerialNumber);
+        }
+        
+        if (jdc.creationSerialNumber < this.listCreationSerialNumber) {
+            throw new RuntimeException("current creation serial number " +
+                    this.listCreationSerialNumber + " is newer than import's serial " +
+                    jdc.creationSerialNumber);
+            
+        }
 
+        productList = jdc.products;
+        setListCreationSerialNumber(jdc.creationSerialNumber);
+        
         // sanity check data, do not allow duplicates
 
         for (Product p : productList) {
@@ -111,5 +137,13 @@ public class SpliceProductList {
             }
         }
         return foundProducts;
+    }
+
+    public long getListCreationSerialNumber() {
+        return listCreationSerialNumber;
+    }
+
+    public void setListCreationSerialNumber(long listCreationSerialNumber) {
+        this.listCreationSerialNumber = listCreationSerialNumber;
     }
 }

@@ -64,7 +64,7 @@ public class Main {
         // daemonization stuff
         Daemon daemon = new Daemon();
 
-        //TODO: read from config
+        //TODO: read from config?
         boolean shouldDaemonize = false;
         if (System.getProperty("daemonize") != null) {
             shouldDaemonize = Boolean.valueOf(System.getProperty("daemonize"));
@@ -118,7 +118,7 @@ public class Main {
         server.addConnector(conn);
         server.setThreadPool(injector.getInstance(SpliceQueuedThreadPool.class));
 
-        // set up resteasy
+        // set up resteasy. is there a cleaner way to do this?
         Context root = new Context(server, "/", Context.NO_SECURITY);
         ServletHandler sh = injector.getInstance(ServletHandler.class);
         HttpServletDispatcher hsd = injector.getInstance(HttpServletDispatcher.class);

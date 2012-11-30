@@ -16,12 +16,15 @@ package org.candlepin.splice;
 
 import static org.junit.Assert.assertEquals;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.math.BigInteger;
 
 public class SpliceProductListTest {
 
@@ -80,19 +83,45 @@ public class SpliceProductListTest {
         assertEquals(0, spl.getProducts(shouldNotExist).size());
     }
 
-    @Test
-    public void testReloadProductList() throws IOException {
+    @Test(expected = RuntimeException.class)
+    public void testReloadProductListSameSerial() throws IOException {
         SpliceProductList spl = new SpliceProductList(mapper);
         // first load
         spl.loadProducts(this.getClass().getClassLoader()
                 .getResource("test-products.json").getPath());
         assertEquals(3, spl.getAllProducts().size());
-        // second load
+        // second load, should fail due to using same serial again
+        spl.loadProducts(this.getClass().getClassLoader()
+                .getResource("test-products.json").getPath());
+    }
+
+    @Test
+    public void testReloadProductListNewSerial() throws IOException {
+        SpliceProductList spl = new SpliceProductList(mapper);
+        // first load
+        spl.loadProducts(this.getClass().getClassLoader()
+                .getResource("test-products-old-serial.json").getPath());
+        assertEquals(3, spl.getAllProducts().size());
+        // second load with newer data
         spl.loadProducts(this.getClass().getClassLoader()
                 .getResource("test-products.json").getPath());
         assertEquals(3, spl.getAllProducts().size());
     }
+    
+    @Test(expected = RuntimeException.class)
+    public void testReloadProductListOldSerial() throws IOException {
+        SpliceProductList spl = new SpliceProductList(mapper);
+        // first load
+        spl.loadProducts(this.getClass().getClassLoader()
+                .getResource("test-products.json").getPath());
+        assertEquals(3, spl.getAllProducts().size());
+        // second load with older data, should fail
+        spl.loadProducts(this.getClass().getClassLoader()
+                .getResource("test-products-old-serial.json").getPath());
+    }
 
+
+    
     @Test(expected = RuntimeException.class)
     public void testDuplicateIdInProductList() throws IOException {
         SpliceProductList spl = new SpliceProductList(mapper);
@@ -107,6 +136,15 @@ public class SpliceProductListTest {
                 .getResource("test-products.json").getPath());
         String[] twoProducts = {"69", "83"};
         assertEquals(2, spl.getProducts(twoProducts).size());
+
+    }
+    
+    @Test
+    public void testGetProductListSerial() throws IOException {
+        SpliceProductList spl = new SpliceProductList(mapper);
+        spl.loadProducts(this.getClass().getClassLoader()
+                .getResource("test-products.json").getPath());
+        assertEquals(1354222276, spl.getListCreationSerialNumber());
 
     }
 

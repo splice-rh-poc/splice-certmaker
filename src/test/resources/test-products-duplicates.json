@@ -1,4 +1,6 @@
-[
+{
+    "creationSerialNumber": "1354222276",
+    "products":[
     {
         "attributes": [
             {
@@ -102,5 +104,5 @@
         "name": "foo foo foo", 
         "productContent": [
         ]
-    }
-]
+    }]
+}
