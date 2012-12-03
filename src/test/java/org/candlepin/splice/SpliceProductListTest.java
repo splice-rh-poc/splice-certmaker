@@ -16,15 +16,12 @@ package org.candlepin.splice;
 
 import static org.junit.Assert.assertEquals;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.math.BigInteger;
 
 public class SpliceProductListTest {
 
@@ -107,7 +104,7 @@ public class SpliceProductListTest {
                 .getResource("test-products.json").getPath());
         assertEquals(3, spl.getAllProducts().size());
     }
-    
+
     @Test(expected = RuntimeException.class)
     public void testReloadProductListOldSerial() throws IOException {
         SpliceProductList spl = new SpliceProductList(mapper);
@@ -121,7 +118,7 @@ public class SpliceProductListTest {
     }
 
 
-    
+
     @Test(expected = RuntimeException.class)
     public void testDuplicateIdInProductList() throws IOException {
         SpliceProductList spl = new SpliceProductList(mapper);
@@ -138,7 +135,7 @@ public class SpliceProductListTest {
         assertEquals(2, spl.getProducts(twoProducts).size());
 
     }
-    
+
     @Test
     public void testGetProductListSerial() throws IOException {
         SpliceProductList spl = new SpliceProductList(mapper);

@@ -20,6 +20,7 @@ import org.candlepin.model.ProductAttribute;
 import org.candlepin.model.ProductContent;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParseException;
@@ -36,6 +37,7 @@ import java.util.Set;
 /**
  * SpliceProductList
  */
+@Singleton
 public class SpliceProductList {
     private ObjectMapper mapper;
 
@@ -48,40 +50,69 @@ public class SpliceProductList {
     public SpliceProductList(ObjectMapper mapper) {
         this.mapper = mapper;
         productList = new ArrayList<Product>();
-    }
-    
-    // this needs to be static so jackson can create one without having
-    // to create the outer class!
-    public static class JsonDataContainer {
-        public long creationSerialNumber;
-        public List<Product> products;
+        listCreationSerialNumber = 0;
     }
 
+    // this needs to be static so jackson can create one without having
+    // to create the outer class!
+    /**
+     * JsonDataContainer
+     */
+    public static class JsonDataContainer {
+        private long creationSerialNumber;
+        private List<Product> products;
+
+        public long getCreationSerialNumber() {
+            return creationSerialNumber;
+        }
+
+        public void setCreationSerialNumber(long serial) {
+            creationSerialNumber = serial;
+        }
+
+        public List<Product> getProducts() {
+            return products;
+        }
+
+        public void setProducts(List<Product> products) {
+            this.products = products;
+        }
+    }
+
+    public void loadProductsByJson(String json) throws JsonParseException,
+    JsonMappingException, IOException {
+        log.debug("loading product list from json");
+        log.debug(json);
+        JsonDataContainer jdc = mapper.readValue(json, JsonDataContainer.class);
+        loadJdc(jdc);
+    }
 
     public void loadProducts(String filename) throws JsonParseException,
     JsonMappingException, IOException {
         log.debug("loading product list from " + filename);
         File file = new File(filename);
         JsonDataContainer jdc = mapper.readValue(file, JsonDataContainer.class);
-        
+        loadJdc(jdc);
+    }
+
+    private void loadJdc(JsonDataContainer jdc) {
         // ensure we are not importing identical or stale data
-        
+
         if (jdc.creationSerialNumber <= listCreationSerialNumber) {
             throw new RuntimeException("imported data cannot have lower serial number" +
-            		" than existing data. Existing: " + listCreationSerialNumber +
-            		", import: " + jdc.creationSerialNumber);
+                    " than existing data. Existing: " + listCreationSerialNumber +
+                    ", import: " + jdc.creationSerialNumber);
         }
-        
+
         if (jdc.creationSerialNumber < this.listCreationSerialNumber) {
             throw new RuntimeException("current creation serial number " +
                     this.listCreationSerialNumber + " is newer than import's serial " +
                     jdc.creationSerialNumber);
-            
         }
 
         productList = jdc.products;
         setListCreationSerialNumber(jdc.creationSerialNumber);
-        
+
         // sanity check data, do not allow duplicates
 
         for (Product p : productList) {

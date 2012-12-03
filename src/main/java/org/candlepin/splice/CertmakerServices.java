@@ -31,9 +31,8 @@ import javax.ws.rs.core.Application;
  * CertmakerServices
  */
 public class CertmakerServices extends Application {
-    
-    private static Logger log = Logger.getLogger(CertmakerServices.class);
 
+    private static Logger log = Logger.getLogger(CertmakerServices.class);
 
     private static Set<Object> services = new HashSet<Object>();
 
@@ -42,11 +41,12 @@ public class CertmakerServices extends Application {
         Injector injector = Guice.createInjector(Stage.PRODUCTION, new CertgenModule());
 
         try {
-        services.add(injector.getInstance(PingResource.class));
-        services.add(injector.getInstance(CertgenResource.class));
+            services.add(injector.getInstance(PingResource.class));
+            services.add(injector.getInstance(CertgenResource.class));
+            services.add(injector.getInstance(ProductDefinitionResource.class));
         }
         catch (ProvisionException pe) {
-             log.error("error during provisioning", pe);
+            log.error("error during provisioning", pe);
         }
         catch (ConfigurationException ce) {
             log.error("guice configuration error during provisioning", ce);

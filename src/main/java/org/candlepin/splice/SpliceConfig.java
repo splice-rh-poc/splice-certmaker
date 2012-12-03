@@ -52,7 +52,7 @@ public class SpliceConfig extends Config {
         configuration.put("candlepin.ca_key", configuration.get("rhic_ca_key"));
         configuration.put("candlepin.ca_cert", configuration.get("rhic_ca_cert"));
         configuration.put("candlepin.upstream_ca_cert",
-                                configuration.get("rhic_ca_cert"));
+                                configuration.get("splice_server_identity_ca"));
     }
 
     private Map<String, String> loadConfigFile(Ini ini, String filename, String section) {

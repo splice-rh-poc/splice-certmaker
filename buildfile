@@ -1,4 +1,8 @@
-require "buildr/checkstyle"
+nocstyle = ENV['nocheckstyle']
+if nocstyle.nil?
+   require "./buildr/checkstyle"
+end
+
 
 # Version number for this release
 VERSION_NUMBER = "1.0.0"
@@ -55,6 +59,7 @@ SLF4J = [ 'org.slf4j:slf4j-api:jar:1.5.8',
 
 RESTEASY = ['org.jboss.resteasy:resteasy-jaxrs:jar:2.3.5.Final',
             'org.jboss.resteasy:jaxrs-api:jar:2.3.5.Final',
+            'org.jboss.resteasy:resteasy-multipart-provider:jar:2.3.5.Final',
             'org.jboss.resteasy:resteasy-jackson-provider:jar:2.3.5.Final']
 
 

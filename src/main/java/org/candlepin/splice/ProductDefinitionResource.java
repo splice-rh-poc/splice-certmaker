@@ -14,7 +14,18 @@
  */
 package org.candlepin.splice;
 
+import com.google.inject.Inject;
+
+import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+
+import java.io.IOException;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -22,12 +33,43 @@ import javax.ws.rs.core.MediaType;
 /**
  * SpliceEntitlementFactory
  */
-@Path("/product")
+@Path("/productlist")
 public class ProductDefinitionResource {
+
+    private static Logger log = Logger.getLogger(ProductDefinitionResource.class);
+
+    private SpliceProductList spl;
+
+    @Inject
+    public ProductDefinitionResource(SpliceProductList spl) {
+        this.spl = spl;
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public void uploadProductList(@FormParam("product_list") String productListData,
+            @FormParam("product_list_digest") String digest) {
+        try {
+            spl.loadProductsByJson(productListData);
+        }
+        catch (JsonParseException e) {
+            log.error("error parsing json data", e);
+        }
+        catch (JsonMappingException e) {
+            log.error("error mapping json data", e);
+        }
+        catch (IOException e) {
+            log.error("exception while reading json data", e);
+        }
+        log.info("loaded product from json, new serial is " +
+                            spl.getListCreationSerialNumber());
+    }
+
     @GET
+    @Path("/serial")
     @Produces({MediaType.TEXT_PLAIN})
-    public String getProduct() {
-        return "up and running!";
+    public long getProductSerial() {
+        return spl.getListCreationSerialNumber();
     }
 
 }

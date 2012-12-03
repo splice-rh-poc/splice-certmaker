@@ -52,7 +52,8 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         try {
-            //TODO: read config after daemonizing, so daemon's log messages don't go to stdout
+            // TODO: read config after daemonizing, so daemon's
+            // log messages don't go to stdout
             injector = Guice.createInjector(Stage.PRODUCTION, new CertgenModule());
             config = injector.getInstance(SpliceConfig.class);
         }
