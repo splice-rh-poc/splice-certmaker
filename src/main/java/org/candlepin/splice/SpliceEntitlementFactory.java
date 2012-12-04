@@ -59,25 +59,18 @@ public class SpliceEntitlementFactory {
 
     private PKIUtility pkiUtility;
     private X509ExtensionUtil extensionUtil;
-    private SpliceProductList spliceProductList;
+    private SpliceProductListCache spliceProductListCache;
     private RhicKeypairFactory rhicKeypairFactory;
 
     @Inject
     public SpliceEntitlementFactory(SpliceConfig config, X509ExtensionUtil extensionUtil,
-            SpliceProductList spliceProductList, PKIUtility pkiUtility,
+            SpliceProductListCache spliceProductListCache, PKIUtility pkiUtility,
             RhicKeypairFactory rhicKeypairFactory) throws IOException {
 
         this.extensionUtil = extensionUtil;
-        this.spliceProductList = spliceProductList;
+        this.spliceProductListCache = spliceProductListCache;
         this.pkiUtility = pkiUtility;
         this.rhicKeypairFactory = rhicKeypairFactory;
-
-        String productFilename = config.getString("product_json");
-        if (productFilename == null) {
-            throw new RuntimeException("product_json is not defined " +
-                "in config file!");
-        }
-        spliceProductList.loadProducts(productFilename);
 
         // reset serial sequence to 1 on startup
         serialNumber = 1L;
@@ -169,7 +162,7 @@ public class SpliceEntitlementFactory {
             Consumer consumer, Entitlement ent, Subscription sub,
             Map<String, EnvironmentContent> promotedContent) throws RuntimeException {
 
-        Set<Product> products = spliceProductList.getProducts(productIds);
+        Set<Product> products = spliceProductListCache.getProducts(productIds);
 
         // build up a list of found product IDs
         ArrayList<String> foundProductIds = new ArrayList<String>();

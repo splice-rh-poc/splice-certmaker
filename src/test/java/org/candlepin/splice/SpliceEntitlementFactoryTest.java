@@ -55,7 +55,7 @@ public class SpliceEntitlementFactoryTest {
 
     @Mock private SpliceConfig spliceConfig;
     @Mock private X509ExtensionUtil x509ExtensionUtil;
-    @Mock private SpliceProductList spliceProductList;
+    @Mock private SpliceProductListCache spliceProductListCache;
     @Mock private PKIUtility pkiUtility;
     @Mock private RhicKeypairFactory rhicKeypairFactory;
 
@@ -67,14 +67,14 @@ public class SpliceEntitlementFactoryTest {
 //        when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
 //
 //
-//        Set<Product> mockSpliceProductList = new HashSet<Product>();
-//        mockSpliceProductList.add(new Product("100", "test product number 100"));
+//        Set<Product> mockspliceProductListCache = new HashSet<Product>();
+//        mockspliceProductListCache.add(new Product("100", "test product number 100"));
 //
-//        when(spliceProductList.getProducts(new String[] {"100"}))
-//             .thenReturn(mockSpliceProductList);
+//        when(spliceProductListCache.getProducts(new String[] {"100"}))
+//             .thenReturn(mockspliceProductListCache);
 //
 //        SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig,
-//             x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
+//             x509ExtensionUtil, spliceProductListCache, pkiUtility, rhicKeypairFactory);
 //        Date now = new Date();
 //        Date later = DateUtils.addHours(now, 1);
 //
@@ -95,14 +95,14 @@ public class SpliceEntitlementFactoryTest {
         when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
 
 
-        Set<Product> mockSpliceProductList = new HashSet<Product>();
-        mockSpliceProductList.add(new Product("100", "test product number 100"));
+        Set<Product> mockspliceProductListCache = new HashSet<Product>();
+        mockspliceProductListCache.add(new Product("100", "test product number 100"));
 
-        when(spliceProductList.getProducts(new String[] {"100"}))
-                    .thenReturn(mockSpliceProductList);
+        when(spliceProductListCache.getProducts(new String[] {"100"}))
+                    .thenReturn(mockspliceProductListCache);
 
         SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig,
-                x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
+                x509ExtensionUtil, spliceProductListCache, pkiUtility, rhicKeypairFactory);
         Date now = new Date();
         Date later = DateUtils.addHours(now, 1);
 
@@ -120,31 +120,6 @@ public class SpliceEntitlementFactoryTest {
         }
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testNullProductFilename() throws IOException {
-
-        when(spliceConfig.getString("product_json")).thenReturn(null);
-        KeyPair kp = createKeyPair();
-        when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
-
-
-        Set<Product> mockSpliceProductList = new HashSet<Product>();
-        mockSpliceProductList.add(new Product("100", "test product number 100"));
-
-        when(spliceProductList.getProducts(new String[] {"100"}))
-                .thenReturn(mockSpliceProductList);
-
-        SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig,
-                x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
-        Date now = new Date();
-        Date later = DateUtils.addHours(now, 1);
-
-        String[] productList = {"100"};
-
-        Entitlement e = sef.createEntitlement(now, later, productList, "unit-test");
-
-    }
-
     @Test
     public void testNoRhicGiven() throws IOException {
 
@@ -153,14 +128,14 @@ public class SpliceEntitlementFactoryTest {
         when(rhicKeypairFactory.getKeyPair(any(String.class)))
                                     .thenThrow(new RuntimeException("exception!"));
 
-        Set<Product> mockSpliceProductList = new HashSet<Product>();
-        mockSpliceProductList.add(new Product("100", "test product number 100"));
+        Set<Product> mockspliceProductListCache = new HashSet<Product>();
+        mockspliceProductListCache.add(new Product("100", "test product number 100"));
 
-        when(spliceProductList.getProducts(new String[] {"100"}))
-                .thenReturn(mockSpliceProductList);
+        when(spliceProductListCache.getProducts(new String[] {"100"}))
+                .thenReturn(mockspliceProductListCache);
 
         SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig,
-                x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
+                x509ExtensionUtil, spliceProductListCache, pkiUtility, rhicKeypairFactory);
         Date now = new Date();
         Date later = DateUtils.addHours(now, 1);
 
@@ -186,14 +161,14 @@ public class SpliceEntitlementFactoryTest {
         when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
 
 
-        Set<Product> mockSpliceProductList = new HashSet<Product>();
-        mockSpliceProductList.add(new Product("100", "test product number 100"));
+        Set<Product> mockspliceProductListCache = new HashSet<Product>();
+        mockspliceProductListCache.add(new Product("100", "test product number 100"));
 
-        when(spliceProductList.getProducts(new String[] {"100"}))
-                .thenReturn(mockSpliceProductList);
+        when(spliceProductListCache.getProducts(new String[] {"100"}))
+                .thenReturn(mockspliceProductListCache);
 
         SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig,
-                x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
+                x509ExtensionUtil, spliceProductListCache, pkiUtility, rhicKeypairFactory);
         Date now = new Date();
         Date later = DateUtils.addHours(now, 1);
 
@@ -204,7 +179,7 @@ public class SpliceEntitlementFactoryTest {
         assertEquals(now, e.getStartDate());
         assertEquals(later, e.getEndDate());
         assertEquals(1, e.getCertificates().size());
-        verify(spliceProductList).getProducts(productList);
+        verify(spliceProductListCache).getProducts(productList);
 
     }
 
@@ -217,14 +192,14 @@ public class SpliceEntitlementFactoryTest {
         when(rhicKeypairFactory.getKeyPair(any(String.class))).thenReturn(kp);
 
 
-        Set<Product> mockSpliceProductList = new HashSet<Product>();
-        mockSpliceProductList.add(new Product("100", "test product number 100"));
+        Set<Product> mockspliceProductListCache = new HashSet<Product>();
+        mockspliceProductListCache.add(new Product("100", "test product number 100"));
 
-        when(spliceProductList.getProducts(new String[] {"100"}))
-                .thenReturn(mockSpliceProductList);
+        when(spliceProductListCache.getProducts(new String[] {"100"}))
+                .thenReturn(mockspliceProductListCache);
 
         SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig,
-                x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
+                x509ExtensionUtil, spliceProductListCache, pkiUtility, rhicKeypairFactory);
         Date now = new Date();
         Date later = DateUtils.addHours(now, 1);
 
@@ -248,7 +223,7 @@ public class SpliceEntitlementFactoryTest {
 
 
         SpliceEntitlementFactory sef = new SpliceEntitlementFactory(spliceConfig,
-                x509ExtensionUtil, spliceProductList, pkiUtility, rhicKeypairFactory);
+                x509ExtensionUtil, spliceProductListCache, pkiUtility, rhicKeypairFactory);
         Date now = new Date();
         Date later = DateUtils.addHours(now, 1);
 

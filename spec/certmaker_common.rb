@@ -3,11 +3,10 @@ module CertmakerMethods
   def create_certmaker()
 
     m2_repo = "../../.m2/repository"
-
     # please keep this sorted
     classpath="target/splice-certmaker-1.0.0.jar:" + 
               "#{m2_repo}/aopalliance/aopalliance/1.0/aopalliance-1.0.jar:" +
-              "#{m2_repo}/candlepin/candlepin-certgen/0.7.16/candlepin-certgen-0.7.16.jar:" +
+              "#{m2_repo}/candlepin/candlepin-certgen/0.7.21/candlepin-certgen-0.7.21.jar:" +
               "#{m2_repo}/com/google/collections/google-collections/1.0/google-collections-1.0.jar:" +
               "#{m2_repo}/com/google/inject/guice/3.0/guice-3.0.jar:" +
               "#{m2_repo}/commons-codec/commons-codec/1.4/commons-codec-1.4.jar:" +
@@ -17,8 +16,10 @@ module CertmakerMethods
               "#{m2_repo}/javax/inject/javax.inject/1/javax.inject-1.jar:" +
               "#{m2_repo}/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar:" +
               "#{m2_repo}/log4j/log4j/1.2.14/log4j-1.2.14.jar:" +
+              "#{m2_repo}/org/apache/openejb/javaee-api/5.0-2/javaee-api-5.0-2.jar:" +
               "#{m2_repo}/org/bouncycastle/bcprov-jdk16/1.46/bcprov-jdk16-1.46.jar:" +
               "#{m2_repo}/org/codehaus/jackson/jackson-core-lgpl/1.9.2/jackson-core-lgpl-1.9.2.jar:" +
+              "#{m2_repo}/org/codehaus/jackson/jackson-jaxrs/1.9.2/jackson-jaxrs-1.9.2.jar:" +
               "#{m2_repo}/org/codehaus/jackson/jackson-mapper-lgpl/1.9.2/jackson-mapper-lgpl-1.9.2.jar:" +
               "#{m2_repo}/org/ini4j/ini4j/0.5.2/ini4j-0.5.2.jar:" +
               "#{m2_repo}/org/jboss/resteasy/jaxrs-api/2.3.1.GA/jaxrs-api-2.3.1.GA.jar:" +

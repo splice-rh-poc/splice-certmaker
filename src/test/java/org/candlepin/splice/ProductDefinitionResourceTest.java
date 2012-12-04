@@ -24,9 +24,9 @@ public class ProductDefinitionResourceTest {
 
     @Test
     public void getProductSerialTest() {
-        SpliceProductList spl = mock(SpliceProductList.class);
+        SpliceProductListCache splc = mock(SpliceProductListCache.class);
 
-        ProductDefinitionResource pdr = new ProductDefinitionResource(spl);
+        ProductDefinitionResource pdr = new ProductDefinitionResource(splc);
         assertEquals((long) 0, pdr.getProductSerial());
     }
 

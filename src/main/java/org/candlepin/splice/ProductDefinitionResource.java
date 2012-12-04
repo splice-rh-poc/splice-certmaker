@@ -16,6 +16,7 @@ package org.candlepin.splice;
 
 import com.google.inject.Inject;
 
+
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -38,11 +39,11 @@ public class ProductDefinitionResource {
 
     private static Logger log = Logger.getLogger(ProductDefinitionResource.class);
 
-    private SpliceProductList spl;
+    private SpliceProductListCache splc;
 
     @Inject
-    public ProductDefinitionResource(SpliceProductList spl) {
-        this.spl = spl;
+    public ProductDefinitionResource(SpliceProductListCache splc) {
+        this.splc = splc;
     }
 
     @POST
@@ -50,7 +51,7 @@ public class ProductDefinitionResource {
     public void uploadProductList(@FormParam("product_list") String productListData,
             @FormParam("product_list_digest") String digest) {
         try {
-            spl.loadProductsByJson(productListData);
+            splc.writeCache(productListData);
         }
         catch (JsonParseException e) {
             log.error("error parsing json data", e);
@@ -62,14 +63,14 @@ public class ProductDefinitionResource {
             log.error("exception while reading json data", e);
         }
         log.info("loaded product from json, new serial is " +
-                            spl.getListCreationSerialNumber());
+                            splc.getCachedSerial());
     }
 
     @GET
     @Path("/serial")
     @Produces({MediaType.TEXT_PLAIN})
     public long getProductSerial() {
-        return spl.getListCreationSerialNumber();
+        return splc.getCachedSerial();
     }
 
 }

@@ -14,7 +14,7 @@ COPYRIGHT = ""
 repositories.remote << "http://repo1.maven.org/maven2"
 repositories.remote << "http://ec2-23-22-86-129.compute-1.amazonaws.com/pub/jars"
 
-CANDLEPIN = 'candlepin:candlepin-certgen:jar:0.7.19'
+CANDLEPIN = 'candlepin:candlepin-certgen:jar:0.7.21'
 
 BOUNCYCASTLE = group('bcprov-jdk16', :under=>'org.bouncycastle', :version=>'1.46')
 
@@ -36,6 +36,7 @@ HIBERNATE = ['org.hibernate:hibernate-core:jar:3.3.2.GA',
 
 COMMONS = ['commons-codec:commons-codec:jar:1.4',
             'commons-collections:commons-collections:jar:3.1',
+            'commons-io:commons-io:jar:1.3.2',
             'commons-lang:commons-lang:jar:2.5']
 
 COLLECTIONS = 'com.google.collections:google-collections:jar:1.0'

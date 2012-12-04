@@ -29,7 +29,8 @@
                     "type": "yum", 
                     "vendor": "test-vendor"
                 }, 
-                "enabled": true
+                "enabled": true,
+                "id": null
             }
         ]
     }, 
@@ -93,7 +94,8 @@
                     "type": "yum", 
                     "vendor": "test-vendor"
                 }, 
-                "enabled": true
+                "enabled": true,
+                "id": null
             }
         ]
     }]

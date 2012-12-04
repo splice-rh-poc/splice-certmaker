@@ -37,6 +37,7 @@ Requires: jakarta-commons-codec >= 1.4
 Requires: jakarta-commons-collections
 Requires: jakarta-commons-lang
 Requires: java >= 1.6.0
+Requires: jboss-javaee
 Requires: jetty-eclipse
 Requires: jna
 Requires: log4j >= 1.2
