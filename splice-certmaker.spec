@@ -106,8 +106,8 @@ install -m 644 target/%{name}.jar $RPM_BUILD_ROOT/%{_datadir}/%{name}
 install -d -m 755 $RPM_BUILD_ROOT/%{_bindir}/
 install -m 755 %{name}.bin $RPM_BUILD_ROOT/%{_bindir}/%{name}
 
-#install -d -m 755 $RPM_BUILD_ROOT/%{_initddir}
-#install -m 755 splice-certmaker.init $RPM_BUILD_ROOT/%{_initddir}/%{name}
+install -d -m 755 $RPM_BUILD_ROOT/%{_initddir}
+install -m 755 splice-certmaker.init $RPM_BUILD_ROOT/%{_initddir}/%{name}
 
 install -d -m 775 $RPM_BUILD_ROOT/%{_var}/log/splice-certmaker
 install -d -m 775 $RPM_BUILD_ROOT/%{_var}/run/splice-certmaker
@@ -175,14 +175,12 @@ fi
 %files
 %defattr(-, root, splice)
 #%doc README
-#%{_initddir}/%{name}
+%{_initddir}/%{name}
 %{_bindir}/%{name}
 
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/splice-certmaker.jar
 
-%dir %{_var}/log/splice-certmaker
-%dir %{_var}/run/splice-certmaker
 %ghost %attr(660, splice, splice) %{_var}/run/splice/certmaker.pid
 %ghost %attr(660, splice, splice) %{_var}/lock/subsys/splice-certmaker
 
