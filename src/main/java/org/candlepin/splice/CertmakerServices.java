@@ -47,13 +47,9 @@ public class CertmakerServices extends Application {
             services.add(injector.getInstance(CertgenResource.class));
             services.add(injector.getInstance(ProductDefinitionResource.class));
         }
-        catch (ProvisionException pe) {
-            log.error("error during provisioning", pe);
+        catch (Exception e) {
+            log.error("error during provisioning", e);
         }
-        catch (ConfigurationException ce) {
-            log.error("guice configuration error during provisioning", ce);
-        }
-
         log.info("completed guice injector initialization");
 
     }
