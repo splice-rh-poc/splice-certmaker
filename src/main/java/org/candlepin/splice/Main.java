@@ -113,13 +113,16 @@ public class Main {
 
         log.info("starting server on port " + listenPort);
         server = new Server();
+        log.info("initializing connectors");
         Connector conn = injector.getInstance(SelectChannelConnector.class);
         conn.setPort(listenPort);
         conn.setServer(server);
         server.addConnector(conn);
+        log.info("initializing thread pool");
         server.setThreadPool(injector.getInstance(SpliceQueuedThreadPool.class));
 
         // set up resteasy. is there a cleaner way to do this?
+        log.info("initializing resteasy bindings");
         Context root = new Context(server, "/", Context.NO_SECURITY);
         ServletHandler sh = injector.getInstance(ServletHandler.class);
         HttpServletDispatcher hsd = injector.getInstance(HttpServletDispatcher.class);
@@ -130,7 +133,7 @@ public class Main {
         shold.setServlet(hsd);
         sh.addServlet(shold);
         root.addServlet(shold, "/*"); // pass everything to resteasy
-
+        log.info("starting server");
         server.start();
         log.info("server started!");
     }
