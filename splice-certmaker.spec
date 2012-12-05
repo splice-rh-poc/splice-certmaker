@@ -24,7 +24,7 @@ Requires(pre): shadow-utils
 # please keep this sorted
 Requires: akuma
 Requires: bouncycastle
-Requires: candlepin-certgen-lib
+Requires: candlepin-certgen-lib >= 0.7.21
 Requires: cglib
 Requires: codehaus-jackson-core-asl
 Requires: codehaus-jackson-jaxrs
