@@ -24,6 +24,7 @@ import org.candlepin.pki.impl.DefaultSubjectKeyIdentifierWriter;
 
 import com.google.inject.AbstractModule;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
@@ -31,14 +32,22 @@ import org.codehaus.jackson.map.ObjectMapper;
  */
 public class CertgenModule extends AbstractModule {
 
+    private static Logger log = Logger.getLogger(CertgenModule.class);
+
+
     @Override
     protected void configure() {
-        // most of this was copied from candlepin's injector module
-        bind(PKIUtility.class).to(BouncyCastlePKIUtility.class).asEagerSingleton();
-        bind(PKIReader.class).to(BouncyCastlePKIReader.class).asEagerSingleton();
-        bind(SubjectKeyIdentifierWriter.class)
+        try {
+            // most of this was copied from candlepin's injector module
+            bind(PKIUtility.class).to(BouncyCastlePKIUtility.class).asEagerSingleton();
+            bind(PKIReader.class).to(BouncyCastlePKIReader.class).asEagerSingleton();
+            bind(SubjectKeyIdentifierWriter.class)
             .to(DefaultSubjectKeyIdentifierWriter.class).asEagerSingleton();
-        bind(ObjectMapper.class).to(SpliceObjectMapper.class).asEagerSingleton();
-        bind(Config.class).to(SpliceConfig.class).asEagerSingleton();
+            bind(ObjectMapper.class).to(SpliceObjectMapper.class).asEagerSingleton();
+            bind(Config.class).to(SpliceConfig.class).asEagerSingleton();
+        }
+        catch (Exception e) {
+            log.error("Unable to inject!", e);
+        }
     }
 }
