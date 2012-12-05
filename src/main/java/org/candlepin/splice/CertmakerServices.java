@@ -37,6 +37,8 @@ public class CertmakerServices extends Application {
     private static Set<Object> services = new HashSet<Object>();
 
     public CertmakerServices() {
+        
+        log.info("initializing guice injector");
         // this is initialized via servlet configs, so we can't pass an injector in
         Injector injector = Guice.createInjector(Stage.PRODUCTION, new CertgenModule());
 
@@ -52,11 +54,13 @@ public class CertmakerServices extends Application {
             log.error("guice configuration error during provisioning", ce);
         }
 
+        log.info("completed guice injector initialization");
+
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public  Set getSingletons() {
+    public Set getSingletons() {
         return services;
     }
 

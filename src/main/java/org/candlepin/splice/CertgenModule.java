@@ -37,6 +37,7 @@ public class CertgenModule extends AbstractModule {
 
     @Override
     protected void configure() {
+        log.info("injecting objects");
         try {
             // most of this was copied from candlepin's injector module
             bind(PKIUtility.class).to(BouncyCastlePKIUtility.class).asEagerSingleton();
