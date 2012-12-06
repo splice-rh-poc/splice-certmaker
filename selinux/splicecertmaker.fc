@@ -1,0 +1,7 @@
+/etc/rc.d/init.d/splice-certmaker gen_context(system_u:object_r:splicecertmaker_initrc_exec_t,s0)
+
+/usr/bin/splice-certmaker gen_context(system_u:object_r:splicecertmaker_exec_t,s0)
+
+/var/run/splice/certmaker.pid gen_context(system_u:object_r:splicecertmaker_var_run_t,s0)
+/var/lock/subsys/splice-certmaker gen_context(system_u:object_r:splicecertmaker_rw_t,s0)
+/var/log/splice/(/.*)? gen_context(system_u:object_r:splicecertmaker_log_t,s0)

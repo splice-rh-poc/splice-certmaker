@@ -1,0 +1,245 @@
+
+## <summary>policy for splicecertmaker</summary>
+
+
+########################################
+## <summary>
+##	Transition to splicecertmaker.
+## </summary>
+## <param name="domain">
+## <summary>
+##	Domain allowed to transition.
+## </summary>
+## </param>
+#
+interface(`splicecertmaker_domtrans',`
+	gen_require(`
+		type splicecertmaker_t, splicecertmaker_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	domtrans_pattern($1, splicecertmaker_exec_t, splicecertmaker_t)
+')
+
+
+########################################
+## <summary>
+##	Execute splicecertmaker server in the splicecertmaker domain.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`splicecertmaker_initrc_domtrans',`
+	gen_require(`
+		type splicecertmaker_initrc_exec_t;
+	')
+
+	init_labeled_script_domtrans($1, splicecertmaker_initrc_exec_t)
+')
+
+
+########################################
+## <summary>
+##	Read splicecertmaker's log files.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <rolecap/>
+#
+interface(`splicecertmaker_read_log',`
+	gen_require(`
+		type splicecertmaker_log_t;
+	')
+
+	logging_search_logs($1)
+	read_files_pattern($1, splicecertmaker_log_t, splicecertmaker_log_t)
+')
+
+########################################
+## <summary>
+##	Append to splicecertmaker log files.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`splicecertmaker_append_log',`
+	gen_require(`
+		type splicecertmaker_log_t;
+	')
+
+	logging_search_logs($1)
+	append_files_pattern($1, splicecertmaker_log_t, splicecertmaker_log_t)
+')
+
+########################################
+## <summary>
+##	Manage splicecertmaker log files
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`splicecertmaker_manage_log',`
+	gen_require(`
+		type splicecertmaker_log_t;
+	')
+
+	logging_search_logs($1)
+	manage_dirs_pattern($1, splicecertmaker_log_t, splicecertmaker_log_t)
+	manage_files_pattern($1, splicecertmaker_log_t, splicecertmaker_log_t)
+	manage_lnk_files_pattern($1, splicecertmaker_log_t, splicecertmaker_log_t)
+')
+
+########################################
+## <summary>
+##	Search splicecertmaker rw directories.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`splicecertmaker_search_rw_dir',`
+	gen_require(`
+		type splicecertmaker_rw_t;
+	')
+
+	allow $1 splicecertmaker_rw_t:dir search_dir_perms;
+	files_search_rw($1)
+')
+
+########################################
+## <summary>
+##	Read splicecertmaker rw files.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`splicecertmaker_read_rw_files',`
+	gen_require(`
+		type splicecertmaker_rw_t;
+	')
+
+	allow $1 splicecertmaker_rw_t:file read_file_perms;
+	allow $1 splicecertmaker_rw_t:dir list_dir_perms;
+	files_search_rw($1)
+')
+
+########################################
+## <summary>
+##	Manage splicecertmaker rw files.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`splicecertmaker_manage_rw_files',`
+	gen_require(`
+		type splicecertmaker_rw_t;
+	')
+
+	manage_files_pattern($1, splicecertmaker_rw_t, splicecertmaker_rw_t)
+')
+
+########################################
+## <summary>
+##	Create, read, write, and delete
+##	splicecertmaker rw dirs.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`splicecertmaker_manage_rw_dirs',`
+	gen_require(`
+		type splicecertmaker_rw_t;
+	')
+
+	manage_dirs_pattern($1, splicecertmaker_rw_t, splicecertmaker_rw_t)
+')
+
+
+########################################
+## <summary>
+##	Read splicecertmaker PID files.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`splicecertmaker_read_pid_files',`
+	gen_require(`
+		type splicecertmaker_var_run_t;
+	')
+
+	files_search_pids($1)
+	allow $1 splicecertmaker_var_run_t:file read_file_perms;
+')
+
+
+########################################
+## <summary>
+##	All of the rules required to administrate
+##	an splicecertmaker environment
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access.
+##	</summary>
+## </param>
+## <rolecap/>
+#
+interface(`splicecertmaker_admin',`
+	gen_require(`
+		type splicecertmaker_t;
+	type splicecertmaker_initrc_exec_t;
+	type splicecertmaker_log_t;
+	type splicecertmaker_rw_t;
+	type splicecertmaker_var_run_t;
+	')
+
+	allow $1 splicecertmaker_t:process { ptrace signal_perms };
+	ps_process_pattern($1, splicecertmaker_t)
+
+	splicecertmaker_initrc_domtrans($1)
+	domain_system_change_exemption($1)
+	role_transition $2 splicecertmaker_initrc_exec_t system_r;
+	allow $2 system_r;
+
+	logging_search_logs($1)
+	admin_pattern($1, splicecertmaker_log_t)
+
+	files_search_etc($1)
+	admin_pattern($1, splicecertmaker_rw_t)
+
+	files_search_pids($1)
+	admin_pattern($1, splicecertmaker_var_run_t)
+
+')
+

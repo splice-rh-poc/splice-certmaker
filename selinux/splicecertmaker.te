@@ -1,0 +1,83 @@
+policy_module(splicecertmaker, 1.0.0)
+
+########################################
+#
+# Declarations
+#
+
+type splicecertmaker_t;
+type splicecertmaker_tmp_t;
+type splicecertmaker_exec_t;
+init_daemon_domain(splicecertmaker_t, splicecertmaker_exec_t, splicecertmaker_tmp_t)
+
+type splicecertmaker_port_t;
+
+permissive splicecertmaker_t;
+
+type splicecertmaker_initrc_exec_t;
+init_script_file(splicecertmaker_initrc_exec_t)
+
+type splicecertmaker_log_t;
+logging_log_file(splicecertmaker_log_t)
+
+type splicecertmaker_rw_t;
+files_type(splicecertmaker_rw_t)
+
+type splicecertmaker_var_run_t;
+files_pid_file(splicecertmaker_var_run_t)
+
+########################################
+#
+# splicecertmaker local policy
+#
+
+require {
+	type tmp_t;
+	type krb5_host_rcache_t;
+	type splicecertmaker_tmp_t;
+	type splicecertmaker_t;
+	class process { execmem signull };
+	class file { write execute read create unlink open getattr };
+}
+
+
+allow splicecertmaker_t krb5_host_rcache_t:file { write execute read create unlink open getattr };
+allow splicecertmaker_t self:fifo_file rw_fifo_file_perms;
+allow splicecertmaker_t self:process { execmem signull };
+allow splicecertmaker_t self:tcp_socket create_stream_socket_perms;
+allow splicecertmaker_t self:unix_stream_socket create_stream_socket_perms;
+allow splicecertmaker_t splicecertmaker_port_t:tcp_socket name_bind;
+allow splicecertmaker_t splicecertmaker_port_t:tcp_socket name_connect;
+allow splicecertmaker_t splicecertmaker_tmp_t:file execute;
+allow splicecertmaker_t tmp_t:file { write execute read create unlink open getattr };
+corecmd_read_bin_symlinks(splicecertmaker_t)
+corenet_all_recvfrom_unlabeled(splicecertmaker_t)
+corenet_port(splicecertmaker_port_t)
+corenet_tcp_bind_generic_node(splicecertmaker_t)
+corenet_tcp_connect_generic_port(splicecertmaker_t)
+corenet_tcp_connect_http_port(splicecertmaker_t)
+corenet_tcp_sendrecv_all_ports(splicecertmaker_t)
+corenet_tcp_sendrecv_generic_if(splicecertmaker_t)
+corenet_tcp_sendrecv_generic_node(splicecertmaker_t)
+dev_list_sysfs(splicecertmaker_t)
+dev_read_rand(splicecertmaker_t)
+dev_read_urand(splicecertmaker_t)
+domain_use_interactive_fds(splicecertmaker_t)
+files_pid_filetrans(splicecertmaker_t, splicecertmaker_var_run_t, { dir file })
+files_read_etc_files(splicecertmaker_t)
+files_read_usr_files(splicecertmaker_t)
+files_read_usr_symlinks(splicecertmaker_t)
+java_exec(splicecertmaker_t)
+kernel_read_network_state(splicecertmaker_t)
+kernel_read_system_state(splicecertmaker_t)
+kernel_unconfined(splicecertmaker_t)
+logging_log_filetrans(splicecertmaker_t, splicecertmaker_log_t, { dir file })
+manage_dirs_pattern(splicecertmaker_t, splicecertmaker_log_t, splicecertmaker_log_t)
+manage_dirs_pattern(splicecertmaker_t, splicecertmaker_rw_t, splicecertmaker_rw_t)
+manage_dirs_pattern(splicecertmaker_t, splicecertmaker_var_run_t, splicecertmaker_var_run_t)
+manage_files_pattern(splicecertmaker_t, splicecertmaker_log_t, splicecertmaker_log_t)
+manage_files_pattern(splicecertmaker_t, splicecertmaker_rw_t, splicecertmaker_rw_t)
+manage_files_pattern(splicecertmaker_t, splicecertmaker_var_run_t, splicecertmaker_var_run_t)
+miscfiles_read_localization(splicecertmaker_t)
+mta_tmp_filetrans_host_rcache(splicecertmaker_t)
+sysnet_dns_name_resolve(splicecertmaker_t)
