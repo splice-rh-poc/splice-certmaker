@@ -35,12 +35,12 @@ describe 'Concurrency Tests' do
   end
 
   it 'check the ping page' do
-    resp = get('http://localhost:8080/ping')
+    resp = get('http://localhost:8082/ping')
     resp.code.should == '200'
   end
 
   it 'request a product cert' do
-    resp = get('http://localhost:8080/cert/single?product=69')
+    resp = get('http://localhost:8082/cert/single?product=69')
     resp.code.should == '200'
   end
 
@@ -48,7 +48,7 @@ describe 'Concurrency Tests' do
     threads = []
     10.times do |i|
         threads[i] = Thread.new{
-            response = get("http://localhost:8080/cert/concurrency-test?product=69")
+            response = get("http://localhost:8082/cert/concurrency-test?product=69")
             result = JSON.parse(response.body)
             Thread.current["key"] = result['certificates'].first['key']
             Thread.current["serial"] = result['certificates'].first['serial']['id']

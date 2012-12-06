@@ -41,7 +41,7 @@ describe 'Product Definition Tests' do
   end
 
   it 'get the serial number' do
-    resp = get('http://localhost:8080/productlist/serial')
+    resp = get('http://localhost:8082/productlist/serial')
     # the serial could be zero or a real number, depending on if the on-disk
     # cache is populated. Just check that we get a 200.
     resp.code.should == '200'
@@ -52,9 +52,9 @@ describe 'Product Definition Tests' do
     # TODO: use digest and product data
     #product_digest = File.read('/tmp/test.json.sha1')
     product_digest = "NOT_A_REAL_DIGEST"
-    resp = post('http://localhost:8080/productlist/', { :product_list => product_data, :product_list_digest =>product_digest})
+    resp = post('http://localhost:8082/productlist/', { :product_list => product_data, :product_list_digest =>product_digest})
     resp.code.should == '204'
-    resp = get('http://localhost:8080/productlist/serial')
+    resp = get('http://localhost:8082/productlist/serial')
     resp.body.should == "1354222276" 
   end
 

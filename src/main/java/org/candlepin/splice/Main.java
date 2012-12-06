@@ -109,7 +109,7 @@ public class Main {
 
     private static void startServer(SpliceConfig config) throws Exception {
 
-        int listenPort = config.getInt("certmaker_listen_port", 8080);
+        int listenPort = config.getInt("port", 8082);
 
         log.info("starting server on port " + listenPort);
         server = new Server();
