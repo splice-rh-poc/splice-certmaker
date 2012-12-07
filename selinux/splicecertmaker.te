@@ -33,7 +33,6 @@ files_pid_file(splicecertmaker_var_run_t)
 
 require {
 	type tmp_t;
-	type krb5_host_rcache_t;
 	type splicecertmaker_tmp_t;
 	type splicecertmaker_t;
 	class process { execmem signull };
@@ -41,7 +40,6 @@ require {
 }
 
 
-allow splicecertmaker_t krb5_host_rcache_t:file { write execute read create unlink open getattr };
 allow splicecertmaker_t self:fifo_file rw_fifo_file_perms;
 allow splicecertmaker_t self:process { execmem signull };
 allow splicecertmaker_t self:tcp_socket create_stream_socket_perms;
