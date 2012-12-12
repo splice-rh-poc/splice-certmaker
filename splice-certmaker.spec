@@ -32,6 +32,7 @@ Requires: codehaus-jackson-mapper-asl
 Requires: codehaus-jackson-mapper-asl
 Requires: google-collections
 Requires: google-guice
+Requires: httpd
 Requires: ini4j
 Requires: jakarta-commons-codec >= 1.4
 Requires: jakarta-commons-collections
@@ -129,7 +130,7 @@ rm -rf $RPM_BUILD_ROOT
 %pre
 getent group splice >/dev/null || groupadd -r splice
 getent passwd splice >/dev/null || \
-    useradd -r -g splice -d %{_datadir}/%{name} -s /sbin/nologin \
+    useradd -r -g splice -G apache -d %{_datadir}/%{name} -s /sbin/nologin \
     -c "splice user" splice
 exit 0
 
