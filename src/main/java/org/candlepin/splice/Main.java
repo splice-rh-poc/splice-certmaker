@@ -54,7 +54,7 @@ public class Main {
         try {
             // TODO: read config after daemonizing, so daemon's
             // log messages don't go to stdout
-            injector = Guice.createInjector(Stage.PRODUCTION, new CertgenModule());
+            injector = Guice.createInjector(Stage.PRODUCTION, new CertmakerModule());
             config = injector.getInstance(SpliceConfig.class);
         }
         catch (Exception e) {

@@ -30,9 +30,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 /**
  * CertgenModule
  */
-public class CertgenModule extends AbstractModule {
+public class CertmakerModule extends AbstractModule {
 
-    private static Logger log = Logger.getLogger(CertgenModule.class);
+    private static Logger log = Logger.getLogger(CertmakerModule.class);
 
 
     @Override

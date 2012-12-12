@@ -40,11 +40,11 @@ public class CertmakerServices extends Application {
         
         log.info("initializing guice injector");
         // this is initialized via servlet configs, so we can't pass an injector in
-        Injector injector = Guice.createInjector(Stage.PRODUCTION, new CertgenModule());
+        Injector injector = Guice.createInjector(Stage.PRODUCTION, new CertmakerModule());
 
         try {
             services.add(injector.getInstance(PingResource.class));
-            services.add(injector.getInstance(CertgenResource.class));
+            services.add(injector.getInstance(CertmakerResource.class));
             services.add(injector.getInstance(ProductDefinitionResource.class));
         }
         catch (Exception e) {

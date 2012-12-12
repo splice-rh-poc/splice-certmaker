@@ -31,21 +31,21 @@ import java.util.Map;
 public class SpliceConfig extends Config {
     private static Logger log = Logger.getLogger(SpliceConfig.class);
 
-    private static final String CERTGEN_CONF_FILE =
+    private static final String CERTMAKER_CONF_FILE =
                         "/etc/splice/conf.d/server.conf";
-    private static final String CERTGEN_SHARED_CONF_FILE =
+    private static final String CERTMAKER_SHARED_CONF_FILE =
                         "/etc/splice/splice.conf";
-    private static final String CERTGEN_INI_SECTION_CERTMAKER = "entitlement";
-    private static final String CERTGEN_INI_SECTION_CERTS = "security";
+    private static final String CERTMAKER_INI_SECTION_CERTMAKER = "entitlement";
+    private static final String CERTMAKER_INI_SECTION_CERTS = "security";
 
     public SpliceConfig(Ini ini, String filename, String sharedFilename) {
         log.info("loading server config from " + filename);
         Map<String, String> serverConfigMap = loadConfigFile(ini, filename,
-                CERTGEN_INI_SECTION_CERTMAKER);
+                CERTMAKER_INI_SECTION_CERTMAKER);
 
         log.info("loading shared config from " + sharedFilename);
         Map<String, String> sharedConfigMap = loadConfigFile(ini, sharedFilename,
-                CERTGEN_INI_SECTION_CERTS);
+                CERTMAKER_INI_SECTION_CERTS);
 
         configuration.putAll(serverConfigMap);
         configuration.putAll(sharedConfigMap);
@@ -75,6 +75,6 @@ public class SpliceConfig extends Config {
 
     @Inject
     public SpliceConfig(Ini ini) {
-        this(ini, CERTGEN_CONF_FILE, CERTGEN_SHARED_CONF_FILE);
+        this(ini, CERTMAKER_CONF_FILE, CERTMAKER_SHARED_CONF_FILE);
     }
 }

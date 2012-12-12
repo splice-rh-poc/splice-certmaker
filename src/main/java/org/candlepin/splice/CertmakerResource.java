@@ -37,16 +37,16 @@ import javax.ws.rs.core.MediaType;
  * CertgenResource
  */
 @Path("/cert")
-public class CertgenResource {
+public class CertmakerResource {
 
-    private static Logger log = Logger.getLogger(CertgenResource.class);
+    private static Logger log = Logger.getLogger(CertmakerResource.class);
 
     private SpliceEntitlementFactory spliceEntitlementFactory;
     private ObjectMapper mapper;
 
 
     @Inject
-    public CertgenResource(SpliceEntitlementFactory spliceEntitlementFactory,
+    public CertmakerResource(SpliceEntitlementFactory spliceEntitlementFactory,
             ObjectMapper mapper) {
         this.spliceEntitlementFactory = spliceEntitlementFactory;
         this.mapper = mapper;

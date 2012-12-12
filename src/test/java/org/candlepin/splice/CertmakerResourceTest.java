@@ -24,15 +24,15 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class CertgenResourceTest {
+public class CertmakerResourceTest {
 
     @Test(expected = RuntimeException.class)
     public void testHandleException() throws RuntimeException {
         SpliceEntitlementFactory sef = mock(SpliceEntitlementFactory.class);
         when(sef.createEntitlement(any(Date.class), any(Date.class), any(String[].class),
                             any(String.class))).thenThrow(new RuntimeException("oh no!"));
-        CertgenResource certgenResource =
-                    new CertgenResource(sef, mock(ObjectMapper.class));
+        CertmakerResource certgenResource =
+                    new CertmakerResource(sef, mock(ObjectMapper.class));
 
         certgenResource.getCert(new ArrayList<String>(), new String());
     }
